@@ -1,5 +1,6 @@
 package likelion14th.lte.utils.Image;
 
+import likelion14th.lte.utils.exception.UtilException;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.apache.tika.Tika;
@@ -9,49 +10,76 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+
+import static likelion14th.lte.utils.exception.UtilException.Reason.*;
 
 @Component
 public class ImageUtil {
 
-    private static final Tika tika=new Tika();
+    private static final Tika tika = new Tika();
+
     public record ResizedImage(byte[] bytes, String contentType, String extension) {}
 
-    private void validateImage(MultipartFile file) throws IOException {
-        String detectedType = tika.detect(file.getInputStream());
-        Set<String> allowed = Set.of("image/png", "image/jpg", "image/jpeg","image/webp");
+    private static final Set<String> ALLOWED = Set.of(
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+    );
 
-        if(!allowed.contains(detectedType)){
-            throw new IllegalArgumentException("이미지 파일이 아닙니다"+detectedType);
+    private static final long MAX_SIZE = 50L * 1024 * 1024; // 50MB
+
+    public void validateImage(MultipartFile file) {
+
+        if (file == null || file.isEmpty() || file.getSize() <= 0) {
+            throw new UtilException(FILE_EMPTY);
         }
 
-        long maxSize = 50*1024*1024L;
-
-        if(file.getSize() <=0 || file.getSize()>maxSize){
-            throw new IllegalArgumentException("파일이 너무 큽니다"+file.getSize());
+        if (file.getSize() > MAX_SIZE) {
+            throw new UtilException(FILE_TOO_LARGE);
         }
-    }
 
-    public ResizedImage resizeProfileToWebpBytes(MultipartFile file, int size) throws IOException {
-
-        BufferedImage output;
         try (InputStream is = file.getInputStream()) {
-            output = Thumbnails.of(is)
-                    .size(size, size)
-                    .crop(Positions.CENTER)   // 비율 유지 + 크면 축소 + 작으면 확대 + 중앙 크롭
-                    .asBufferedImage();
+            String detectedType = tika.detect(is);
+            if (!ALLOWED.contains(detectedType)) {
+                throw new UtilException(TYPE_NOT_ALLOWED);
+            }
+        } catch (UtilException e) {
+            throw e; // 그대로 전파
+        } catch (Exception e) {
+            throw new UtilException(IMAGE_PROCESS_FAILED, e);
         }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(output, "webp", baos);   // WebP 출력
-
-        return new ResizedImage(
-                baos.toByteArray(),
-                "image/webp",
-                "webp"
-        );
     }
 
+    public ResizedImage resizeProfileToWebpBytes(MultipartFile file, int size) {
+
+        try {
+            BufferedImage output;
+            try (InputStream is = file.getInputStream()) {
+                output = Thumbnails.of(is)
+                        .size(size, size)
+                        .crop(Positions.CENTER)
+                        .asBufferedImage();
+            }
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            boolean ok = ImageIO.write(output, "webp", baos);
+
+            if (!ok) {
+                throw new UtilException(IMAGE_PROCESS_FAILED);
+            }
+
+            return new ResizedImage(
+                    baos.toByteArray(),
+                    "image/webp",
+                    "webp"
+            );
+
+        } catch (UtilException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UtilException(IMAGE_PROCESS_FAILED, e);
+        }
+    }
 }
