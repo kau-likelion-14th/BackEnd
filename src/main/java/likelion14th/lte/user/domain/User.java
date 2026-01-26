@@ -1,7 +1,7 @@
 package likelion14th.lte.user.domain;
 
 import jakarta.persistence.*;
-import likelion14th.lte.BaseEntity;
+import likelion14th.lte.Entity.BaseEntity;
 import lombok.*;
 
 @Entity

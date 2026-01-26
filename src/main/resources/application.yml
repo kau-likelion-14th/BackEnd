@@ -37,11 +37,14 @@ JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}  # Refresh(ms)
 #s3
 cloud:
   aws:
-    access-key: ${AWS_ACCESS_KEY:default-access-key}
-    secret-key: ${AWS_SECRET_KEY:default-secret-key}
-    region: ${AWS_REGION:ap-northeast-2}
-    bucket: ${AWS_BUCKET:default-bucket}
-
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION}
+    s3:
+      bucket: ${AWS_BUCKET}
+      path:
+        location: user/
 server:
   tomcat:
     max-swallow-size: -1
@@ -51,12 +54,11 @@ server:
 springdoc:
   api-docs:
     path: /v3/api-docs
-    # Swagger? OpenAPI ??? ???? ?? ??
+
   swagger-ui:
     path: /swagger-ui.html
-    # Swaggerd UI ??? URL ?? ??
-    display-request-duration: true # ??? ???? ? ?? ?? ?? ??
-    operations-sorter: method # ??? ?? ???? API ??---
+    display-request-duration: true
+    operations-sorter: method
 
 ---
 
