@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AuthResponse {
+public class UserResponse {
     private Long id;
     private String username;
     private String introduction;
@@ -14,14 +14,13 @@ public class AuthResponse {
     private String userTag;
     private String accessToken;
 
-    public static AuthResponse from(User user, String accessToken) {
-        return AuthResponse.builder()
+    public static UserResponse from(User user) {
+        return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .introduction(user.getIntroduction())
                 .profileImage(user.getProfileImage())
                 .userTag(user.getUserTag())
-                .accessToken(accessToken)
                 .build();
     }
 }
