@@ -37,7 +37,9 @@ public enum ErrorCode implements BaseCode { // 실패
     FOLLOW_SELF_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "FOLLOW_4001", "자기 자신을 팔로우할 수 없습니다."),
     FOLLOW_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOW_4041", "팔로우 대상 사용자가 존재하지 않습니다."),
     FOLLOW_ALREADY_EXISTS(HttpStatus.CONFLICT, "FOLLOW_4091", "이미 팔로우한 사용자입니다."),
-    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOW_4042", "팔로우 관계가 존재하지 않습니다.");
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOW_4042", "팔로우 관계가 존재하지 않습니다."),
+    INVALID_HANDLE_FORMAT(HttpStatus.BAD_REQUEST, "F002", "유저 검색 형식이 올바르지 않습니다. (예: 김동현#1234)");
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

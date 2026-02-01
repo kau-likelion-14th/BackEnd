@@ -33,7 +33,7 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String profileImage;
 
-    @Column(length = 16)
+    @Column(length = 16, nullable = false, unique = true)
     private String userTag;
 
     @Column(columnDefinition = "TEXT")
