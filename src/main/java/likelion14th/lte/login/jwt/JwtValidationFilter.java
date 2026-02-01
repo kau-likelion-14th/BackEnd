@@ -1,0 +1,92 @@
+package likelion14th.lte.login.jwt;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import likelion14th.lte.global.api.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import likelion14th.lte.global.api.ErrorCode;
+
+import java.io.IOException;
+import java.util.Collections;
+
+@Component
+@RequiredArgsConstructor
+public class JwtValidationFilter extends OncePerRequestFilter {
+
+    private final JwtProvider jwtProvider;
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        String header = request.getHeader("Authorization");
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = header.substring(7);
+
+        try {
+            // 1) 토큰 파싱/검증 (여기서 예외 터질 수 있음)
+            jwtProvider.validate(token);
+
+            // 2) userId 추출
+            Long userId = jwtProvider.getUserId(token);
+
+            // 3) 인증 등록
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId,
+                            null,
+                            Collections.emptyList()
+                    );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            filterChain.doFilter(request, response);
+
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            // 잘못된 서명 / 위조 / 형식 오류
+            sendErrorResponse(response, ErrorCode.TOKEN_INVALID);
+        } catch (ExpiredJwtException e) {
+            // 토큰 만료
+            sendErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
+        } catch (UnsupportedJwtException e) {
+            // 지원하지 않는 형식의 토큰
+            sendErrorResponse(response, ErrorCode.TOKEN_INVALID);
+        } catch (IllegalArgumentException e) {
+            // 널 / 공백 등 잘못된 입력
+            sendErrorResponse(response, ErrorCode.TOKEN_INVALID);
+        } catch (Exception e) {
+            // 예기치 못한 오류
+            sendErrorResponse(response, ErrorCode.TOKEN_INVALID);
+        }
+    }
+
+    // 표준 에러 응답 -> JSON 반환
+    // 상태 코드 401 통일
+    // INVALID - 401, 기타 = 500 에러 있다 -> 따로
+    private void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(
+                new ObjectMapper().writeValueAsString(ApiResponse.onFailure(errorCode, null))
+        );
+    }
+}

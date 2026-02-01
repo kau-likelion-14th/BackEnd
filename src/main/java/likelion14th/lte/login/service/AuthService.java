@@ -7,7 +7,7 @@ import likelion14th.lte.login.dto.response.AuthResponse;
 import likelion14th.lte.login.repository.RefreshTokenRepository;
 import likelion14th.lte.user.domain.User;
 import likelion14th.lte.user.repository.UserRepository;
-import likelion14th.lte.global.jwt.JwtProvider;
+import likelion14th.lte.login.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ public class AuthService {
         // code -> 카카오 access_token
         String kakaoAccessToken = kakaoClient.getAccessToken(code);
 
-        // access token → kakao user info
+        // access token -> kakao user info
         JsonNode kakaoUserInfo = kakaoClient.getUserInfo(kakaoAccessToken);
 
         String providerId = kakaoUserInfo.get("id").asText();
@@ -79,6 +79,7 @@ public class AuthService {
                 );
     }
 
+    // TODO 일단 겹치는 유저태그 있는지 확인하는 로직은 안짰습니다. 7자리 -> 8자리로 바꿨구요
     private String generateUserTag() {
         return UUID.randomUUID()
                 .toString()

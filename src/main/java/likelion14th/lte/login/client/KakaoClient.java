@@ -3,7 +3,6 @@ package likelion14th.lte.login.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
-import likelion14th.lte.login.dto.response.KakaoTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
