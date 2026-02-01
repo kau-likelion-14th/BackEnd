@@ -2,7 +2,11 @@ package likelion14th.lte.user.domain;
 
 import jakarta.persistence.*;
 import likelion14th.lte.Entity.BaseEntity;
+import likelion14th.lte.follow.domain.Follow;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +38,13 @@ public class User extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String s3ImageKey;
+
+    @OneToMany(mappedBy = "toUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followings =new ArrayList<>();
 
 
 }
