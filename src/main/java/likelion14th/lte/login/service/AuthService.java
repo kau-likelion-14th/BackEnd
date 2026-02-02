@@ -93,7 +93,7 @@ public class AuthService {
 
         Claims claims;
         try {
-            claims = jwtProvider.parseClaimsAllowExpired(accessToken);
+            claims = jwtProvider.parseClaims(accessToken);
         } catch (Exception e) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }
@@ -137,6 +137,26 @@ public class AuthService {
 
     // accessToken 내 userId 추출 후 refreshToken 삭제
     public void logout(HttpServletRequest request) {
+
+        User user = validateUser(request);
+
+        RefreshToken saved = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorCode.WRONG_REFRESH_TOKEN));
+
+        refreshTokenRepository.delete(saved);
+    }
+
+    // 유효한 accessToken 으로 인증 후 회원탈퇴
+    public void withdraw(HttpServletRequest request) {
+
+        User user = validateUser(request);
+
+        refreshTokenRepository.deleteByUser(user);
+
+        userRepository.delete(user);
+    }
+
+    public User validateUser(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
         if (bearer == null || !bearer.startsWith("Bearer ")) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
@@ -144,33 +164,21 @@ public class AuthService {
 
         String accessToken = bearer.substring(7);
 
-        Claims claims;
         try {
-            // 만료 access도 subject(userId) 뽑기 가능
-            claims = jwtProvider.parseClaimsAllowExpired(accessToken);
+            jwtProvider.validate(accessToken);
         } catch (Exception e) {
-            throw new GeneralException(ErrorCode.TOKEN_INVALID);
-        }
-
-        String sub = claims.getSubject();
-        if (sub == null || sub.isBlank()) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }
 
         Long userId;
 
         try {
-            userId = Long.parseLong(sub);
+            userId = jwtProvider.getUserId(accessToken);
         } catch (NumberFormatException e) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }
 
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
-
-        RefreshToken saved = refreshTokenRepository.findByUser(user)
-                .orElseThrow(() -> new GeneralException(ErrorCode.WRONG_REFRESH_TOKEN));
-
-        refreshTokenRepository.delete(saved);
     }
 }

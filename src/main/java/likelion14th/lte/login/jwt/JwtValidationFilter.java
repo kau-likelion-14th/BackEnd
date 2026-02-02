@@ -94,6 +94,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
 
         // reissue 엔드포인트만 필터 제외
-        return uri.startsWith("/api/auth/reissue") || uri.startsWith("/api/auth/logout");
+        return uri.startsWith("/api/auth/reissue");
     }
 }

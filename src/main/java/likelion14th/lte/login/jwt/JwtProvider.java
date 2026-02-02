@@ -78,7 +78,7 @@ public class JwtProvider {
     }
 
     // accessToken 재발급을 위해 만료된 accessToken 전달
-    public Claims parseClaimsAllowExpired(String token) {
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
