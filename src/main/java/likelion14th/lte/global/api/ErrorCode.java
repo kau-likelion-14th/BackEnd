@@ -50,6 +50,7 @@ public enum ErrorCode implements BaseCode { // 실패
 
     TODO_ROUTINE_RULE_INCONSISTENT(HttpStatus.CONFLICT, "TODO_4091", "루틴 규칙 데이터가 올바르지 않습니다."),
     TODO_DATE_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4007", "일반 투두는 날짜 입력이 필수입니다."),
+    TODO_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO_4042", "해당 날짜의 투두 기록을 찾을 수 없습니다."),
     ;
     private final HttpStatus httpStatus;
     private final String code;

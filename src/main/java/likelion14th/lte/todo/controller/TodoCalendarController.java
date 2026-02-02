@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/todos")
-@Tag(name = "투두 관리", description = "투두 관련 api")
+@Tag(name = "캘린더 관리", description = "캘린더 조회")
 @RequiredArgsConstructor
 public class TodoCalendarController {
 
     private final TodoCalenderService todoCalendarService;
 
-    /**
-     * 월별 캘린더 집계
-     **/
+    /** 월별 캘린더 집계 **/
     @GetMapping("/calendar")
-    @Operation(summary = "월별 캘린더 조회", description = "해당 월의 각 날짜별 남은(미완료) 투두 개수를 반환합니다.")
+    @Operation(summary = "월별 캘린더 조회", description = "해당 월의 각 날짜별 남은 투두 개수를 반환합니다.")
     public ApiResponse<TodoCalendarMonthResponse> getCalendarMonth(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam int year,

@@ -1,16 +1,15 @@
 package likelion14th.lte.todo.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import likelion14th.lte.todo.domain.Week;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class TodoCreateRequest {
 
     @NotBlank(message = "카테고리 선택은 필수입니다.")

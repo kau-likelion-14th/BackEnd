@@ -2,20 +2,20 @@ package likelion14th.lte.todo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import likelion14th.lte.global.api.ApiResponse;
 import likelion14th.lte.global.api.SuccessCode;
 import likelion14th.lte.todo.dto.request.TodoCreateRequest;
 import likelion14th.lte.todo.dto.request.TodoUpdateRequest;
 import likelion14th.lte.todo.dto.response.TodoDetailResponse;
 import likelion14th.lte.todo.dto.response.TodoListResponse;
-import likelion14th.lte.todo.dto.TodoResponse;
 import likelion14th.lte.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class TodoController {
     public ApiResponse<TodoDetailResponse> updateTodoDetail(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long todoId,
-            @RequestBody TodoUpdateRequest todoUpdateRequest
+            @RequestBody @Valid TodoUpdateRequest todoUpdateRequest
     ){
         TodoDetailResponse todo = todoService.updateTodoDetail(
                 customUserDetails.getUserId(),
@@ -69,7 +69,7 @@ public class TodoController {
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
     public ApiResponse<TodoListResponse> createTodo(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody TodoCreateRequest todoCreateRequest,
+            @RequestBody @Valid TodoCreateRequest todoCreateRequest,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
         TodoDetailResponse created = todoService.createTodo(customUserDetails.getUserId(),todoCreateRequest, date);

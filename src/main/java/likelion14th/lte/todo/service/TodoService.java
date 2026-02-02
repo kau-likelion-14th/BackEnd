@@ -237,4 +237,29 @@ public class TodoService {
         // 투두 삭제
         todoRepository.delete(todo);
     }
+
+    @Transactional
+    public TodoListResponse todoComplete(Long userId, Long todoId, LocalDate date) {
+
+        // 사용자 검증
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        // 투두 존재 검증
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.TODO_NOT_FOUND));
+
+        // 소유자 검증
+        if (!todo.getCategory().getUser().getId().equals(user.getId())) {
+            throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
+        }
+
+        TodoDate todoDate = todoDateRepository.findByTodo_IdAndDate(todoId, date)
+                .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND)); // 없으면 ErrorCode 추가 필요
+
+        todoDate.toggleCompleted();
+
+        return TodoListResponse.from(todo, todoDate.isCompleted());
+    }
+
 }
