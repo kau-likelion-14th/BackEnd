@@ -1,6 +1,10 @@
 package likelion14th.lte.login.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import likelion14th.lte.global.api.ErrorCode;
+import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.login.client.KakaoClient;
 import likelion14th.lte.login.domain.RefreshToken;
 import likelion14th.lte.login.dto.response.AuthResponse;
@@ -79,6 +83,49 @@ public class AuthService {
                 );
     }
 
+    public String reissueAccessToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer == null || !bearer.startsWith("Bearer ")) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        String accessToken = bearer.substring(7);
+
+        Claims claims;
+        try {
+            claims = jwtProvider.parseClaimsAllowExpired(accessToken);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        String sub = claims.getSubject();
+        if (sub == null || sub.isBlank()) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        Long userId;
+        try {
+            userId = Long.parseLong(sub);
+        } catch (NumberFormatException e) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        RefreshToken saved = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorCode.WRONG_REFRESH_TOKEN));
+
+        try {
+            jwtProvider.validate(saved.getRefreshToken());
+        } catch (Exception e) {
+            refreshTokenRepository.delete(saved);
+            throw new GeneralException(ErrorCode.TOKEN_EXPIRED);
+        }
+
+        return jwtProvider.createAccessToken(userId);
+    }
+
     // TODO 일단 겹치는 유저태그 있는지 확인하는 로직은 안짰습니다. 7자리 -> 8자리로 바꿨구요
     private String generateUserTag() {
         return UUID.randomUUID()
@@ -86,5 +133,44 @@ public class AuthService {
                 .replace("-", "")
                 .substring(0, 8)
                 .toUpperCase();
+    }
+
+    // accessToken 내 userId 추출 후 refreshToken 삭제
+    public void logout(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer == null || !bearer.startsWith("Bearer ")) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        String accessToken = bearer.substring(7);
+
+        Claims claims;
+        try {
+            // 만료 access도 subject(userId) 뽑기 가능
+            claims = jwtProvider.parseClaimsAllowExpired(accessToken);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        String sub = claims.getSubject();
+        if (sub == null || sub.isBlank()) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        Long userId;
+
+        try {
+            userId = Long.parseLong(sub);
+        } catch (NumberFormatException e) {
+            throw new GeneralException(ErrorCode.TOKEN_INVALID);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        RefreshToken saved = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorCode.WRONG_REFRESH_TOKEN));
+
+        refreshTokenRepository.delete(saved);
     }
 }

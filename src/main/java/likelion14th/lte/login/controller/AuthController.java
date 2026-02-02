@@ -1,14 +1,13 @@
 package likelion14th.lte.login.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ApiResponse;
-import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.api.SuccessCode;
 import likelion14th.lte.login.dto.request.KakaoCodeRequest;
 import likelion14th.lte.login.dto.response.AuthResponse;
 import likelion14th.lte.login.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +30,28 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 ApiResponse.onSuccess(SuccessCode.USER_LOGIN_SUCCESS, response)
+        );
+    }
+
+    // refresh token으로 access token 재발급
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<String>> reissue(HttpServletRequest request) {
+
+        String response = authService.reissueAccessToken(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.onSuccess(SuccessCode.USER_REISSUE_SUCCESS, response));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "DB에 저장된 Refresh Token을 삭제합니다.")
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+
+        // 로그아웃 처리
+        authService.logout(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.onSuccess(SuccessCode.USER_LOGOUT_SUCCESS, null)
         );
     }
 }

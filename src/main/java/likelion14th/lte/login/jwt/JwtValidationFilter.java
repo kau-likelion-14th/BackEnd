@@ -42,13 +42,13 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         try {
-            // 1) 토큰 파싱/검증 (여기서 예외 터질 수 있음)
+            // 토큰 파싱/검증 (여기서 예외 터질 수 있음)
             jwtProvider.validate(token);
 
-            // 2) userId 추출
+            // userId 추출
             Long userId = jwtProvider.getUserId(token);
 
-            // 3) 인증 등록
+            // 인증 등록
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             userId,
@@ -79,14 +79,21 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     }
 
     // 표준 에러 응답 -> JSON 반환
-    // 상태 코드 401 통일
-    // INVALID - 401, 기타 = 500 에러 있다 -> 따로
+    // 상태 코드 401 통일로 되어있어서 에러 코드에 따라 상태 코드 출력 되도록 수정함
     private void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(errorCode.getHttpStatus().value());
         response.getWriter().write(
                 new ObjectMapper().writeValueAsString(ApiResponse.onFailure(errorCode, null))
         );
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+
+        // reissue 엔드포인트만 필터 제외
+        return uri.startsWith("/api/auth/reissue") || uri.startsWith("/api/auth/logout");
     }
 }

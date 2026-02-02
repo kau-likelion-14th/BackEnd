@@ -1,6 +1,7 @@
 package likelion14th.lte.login.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -76,4 +77,16 @@ public class JwtProvider {
         return Long.parseLong(claims.getSubject());
     }
 
+    // accessToken 재발급을 위해 만료된 accessToken 전달
+    public Claims parseClaimsAllowExpired(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
 }
