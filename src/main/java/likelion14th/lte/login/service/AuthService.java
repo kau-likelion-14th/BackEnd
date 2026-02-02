@@ -1,6 +1,6 @@
 package likelion14th.lte.login.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ErrorCode;

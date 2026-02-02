@@ -1,6 +1,6 @@
 package likelion14th.lte.login.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +17,16 @@ public class KakaoClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${kakao.token-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String tokenUri;
 
-    @Value("${kakao.user-info-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String userInfoUri;
 
-    @Value("${kakao.client-id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @Value("${kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
 
     public String getAccessToken(String code) {
@@ -54,6 +54,7 @@ public class KakaoClient {
             return response.get("access_token").asText();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new GeneralException(ErrorCode.KAKAO_AUTH_FAILED);
         }
     }
