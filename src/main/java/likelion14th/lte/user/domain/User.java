@@ -35,5 +35,6 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String s3ImageKey;
 
+    // 카테고리 목록으로 관리
 
 }

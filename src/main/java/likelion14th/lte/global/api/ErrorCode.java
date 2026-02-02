@@ -23,17 +23,34 @@ public enum ErrorCode implements BaseCode { // 실패
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT_4011", "token 유효기간이 만료되었습니다."),
 
     // Image Upload
-
     IMAGE_FILE_EMPTY(HttpStatus.BAD_REQUEST, "IMG_4001", "업로드된 파일이 비어 있습니다."),
     IMAGE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "IMG_4151", "허용되지 않은 이미지 형식입니다."),
     IMAGE_TOO_LARGE(HttpStatus.CONTENT_TOO_LARGE, "IMG_4131", "이미지 파일 용량이 너무 큽니다."),
     IMAGE_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMG_5001", "이미지 처리에 실패했습니다."),
-    // S3 Upload
 
+    // S3 Upload
     S3_UPLOAD_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5031", "파일 저장에 실패했습니다."),
     S3_KEY_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3_5001", "파일 키 생성에 실패했습니다."),
-    S3_DELETE_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5032", "파일 삭제에 실패했습니다.");
+    S3_DELETE_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5032", "파일 삭제에 실패했습니다."),
 
+    // Category
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY_4041", "해당 카테고리를 찾을 수 없습니다."),
+
+    // 투두
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO_4041", "해당 투두를 찾을 수 없습니다."),
+    TODO_ACCESS_DENIED(HttpStatus.FORBIDDEN, "TODO_4031", "해당 투두에 접근할 권한이 없습니다."),
+
+    TODO_ROUTINE_END_DATE_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4001", "종료 날짜 입력은 필수 입니다."),
+    TODO_ROUTINE_DATE_RANGE_INVALID(HttpStatus.BAD_REQUEST, "TODO_4002", "시작 날짜는 종료 날짜의 이전이어야 합니다."),
+    TODO_ROUTINE_DAYS_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4003", "요일 선택은 필수 입니다."),
+    TODO_ROUTINE_DAY_OF_WEEK_INVALID(HttpStatus.BAD_REQUEST, "TODO_4004", "옳지 않은 요일입니다."),
+
+    TODO_DESCRIPTION_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4005", "투두 내용 입력은 필수 입니다."),
+    TODO_CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4006", "카테고리 선택은 필수 입니다."),
+
+    TODO_ROUTINE_RULE_INCONSISTENT(HttpStatus.CONFLICT, "TODO_4091", "루틴 규칙 데이터가 올바르지 않습니다."),
+    TODO_DATE_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4007", "일반 투두는 날짜 입력이 필수입니다."),
+    ;
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
