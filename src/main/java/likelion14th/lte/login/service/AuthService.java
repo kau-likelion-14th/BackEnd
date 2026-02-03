@@ -1,7 +1,6 @@
 package likelion14th.lte.login.service;
 
 import tools.jackson.databind.JsonNode;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
@@ -91,21 +90,16 @@ public class AuthService {
 
         String accessToken = bearer.substring(7);
 
-        Claims claims;
         try {
-            claims = jwtProvider.parseClaims(accessToken);
+            jwtProvider.validate(accessToken);
         } catch (Exception e) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }
 
-        String sub = claims.getSubject();
-        if (sub == null || sub.isBlank()) {
-            throw new GeneralException(ErrorCode.TOKEN_INVALID);
-        }
-
         Long userId;
+
         try {
-            userId = Long.parseLong(sub);
+            userId = jwtProvider.getUserId(accessToken);
         } catch (NumberFormatException e) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }

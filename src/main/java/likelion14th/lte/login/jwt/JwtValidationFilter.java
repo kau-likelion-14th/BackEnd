@@ -51,11 +51,12 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             // 인증 등록
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            userId,
-                            null,
-                            Collections.emptyList()
+                            userId,                     // principal(주체): userId
+                            null,                       // 비밀번호같은 민감값: 없음
+                            Collections.emptyList()     // 권한(role): 없음
                     );
 
+            // 시큐리티 컨텍스트에 등록: @AuthenticationPrincipal 같은 걸로 인증 정보 접근 가능해짐.
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);

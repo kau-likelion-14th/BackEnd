@@ -54,7 +54,6 @@ public class KakaoClient {
             return response.get("access_token").asText();
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new GeneralException(ErrorCode.KAKAO_AUTH_FAILED);
         }
     }
