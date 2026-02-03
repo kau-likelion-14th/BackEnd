@@ -28,8 +28,8 @@ public class TodoController {
 
     /** 투두 리스트 조회 **/
     @GetMapping
-    @Operation(summary = "투두 리스트 조회", description = "홈에서 보여줄, 로그인한 사용자의 투두리스트를 조회합니다.")
-    public ApiResponse<List<TodoListResponse>> getAllTodos(
+    @Operation(summary = "투두 리스트 조회", description = "선택한 날짜의 투두리스트를 조회합니다.")
+    public ApiResponse<List<TodoListResponse>> getTodosByDate(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
@@ -56,47 +56,47 @@ public class TodoController {
             @PathVariable Long todoId,
             @RequestBody @Valid TodoUpdateRequest todoUpdateRequest
     ){
-        TodoDetailResponse todo = todoService.updateTodoDetail(
+        TodoDetailResponse updatedResponse = todoService.updateTodoDetail(
                 customUserDetails.getUserId(),
                 todoId,
                 todoUpdateRequest
         );
-        return ApiResponse.onSuccess(SuccessCode.TODO_DETAIL_UPDATE_SUCCESS, todo);
+        return ApiResponse.onSuccess(SuccessCode.TODO_DETAIL_UPDATE_SUCCESS, updatedResponse);
     }
 
     /** 투두 추가 **/
     @PostMapping
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
-    public ApiResponse<TodoListResponse> createTodo(
+    public ApiResponse<TodoDetailResponse> createTodo(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody @Valid TodoCreateRequest todoCreateRequest,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
-        TodoDetailResponse created = todoService.createTodo(customUserDetails.getUserId(),todoCreateRequest, date);
-        return ApiResponse.onSuccess(SuccessCode.TODO_CREATE_SUCCESS, created);
+        TodoDetailResponse createdResponse = todoService.createTodo(customUserDetails.getUserId(),todoCreateRequest, date);
+        return ApiResponse.onSuccess(SuccessCode.TODO_CREATE_SUCCESS, createdResponse);
     }
 
     /** 투두 삭제 **/
-    @DeleteMapping("/{todoId}")
+    @DeleteMapping("/{todoId}/dates/{date}")
     @Operation(summary = "투두 삭제", description = "투두를 삭제합니다.")
     public ApiResponse<String> deleteTodo(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long todoId
+            @PathVariable Long todoId,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
-        todoService.deleteTodo(customUserDetails.getUserId(), todoId);
+        todoService.deleteTodo(customUserDetails.getUserId(), todoId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_DELETE_SUCCESS, "OK");
     }
 
     /** 투두 완료 처리 **/
     @PatchMapping("/{todoId}/dates/{date}/complete")
     @Operation(summary = "투두 완료 토글", description = "선택한 날짜의 투두 완료/해제를 토글합니다.")
-    public ApiResponse<TodoListResponse> toggleTodoComplete(
+    public ApiResponse<TodoListResponse> updateTodoComplete(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long todoId,
-            // yyyy-MM-dd 형식으로 파밍
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
-        TodoListResponse updated = todoService.todoComplete(customUserDetails.getUserId(), todoId, date);
-        return ApiResponse.onSuccess(SuccessCode.TODO_COMPLETE_SUCCESS, updated);
+        TodoListResponse updatedResponse = todoService.todoComplete(customUserDetails.getUserId(), todoId, date);
+        return ApiResponse.onSuccess(SuccessCode.TODO_COMPLETE_SUCCESS, updatedResponse);
     }
 }

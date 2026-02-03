@@ -42,11 +42,11 @@ public class TodoService {
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
 
         // 유저 + 날짜 기준 TodoDate 조회
-        List<TodoDate> todoDates =  todoDateRepository.findAllByTodo_Category_User_IdAndDate(userId, date);
+        List<TodoDate> todoDates =  todoDateRepository.findAllByTodo_Category_User_IdAndDate(user.getId(), date);
 
         // Dto 변환
         return todoDates.stream()
-                .map(td -> TodoListResponse.of(td.getTodo(), td.isCompleted()))
+                .map(td -> TodoListResponse.from(td.getTodo(), td.isCompleted()))
                 .toList();
     }
 
@@ -93,7 +93,7 @@ public class TodoService {
         if (!todo.getCategory().getUser().getId().equals(user.getId())) {
             throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
         }
-        // 카테고리 변경 검증/조회
+        // 카테고리  검증
         Category category = categoryRepository
                 .findByUser_IdAndCategoryName(user.getId(), request.getCategoryName())
                 .orElseThrow(() -> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -115,7 +115,7 @@ public class TodoService {
             }
 
             if (request.getWeek() == null || request.getWeek().isEmpty()) {
-                throw new GeneralException(ErrorCode.TODO_ROUTINE_DAYS_REQUIRED);
+                throw new GeneralException(ErrorCode.TODO_ROUTINE_WEEK_REQUIRED);
             }
         }
 
@@ -151,11 +151,11 @@ public class TodoService {
             TodoCreateRequest request,
             LocalDate date
     ) {
-        // 1. 사용자 검증
+        // 사용자 검증
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
 
-        // 2. 카테고리 검증
+        // 카테고리 검증
         Category category = categoryRepository
                 .findByUser_IdAndCategoryName(user.getId(), request.getCategoryName())
                 .orElseThrow(() -> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -165,23 +165,17 @@ public class TodoService {
         LocalDate startDate = null;
         LocalDate endDate = null;
 
-        // 3. 일반 투두 검증
+        // 일반 투두 검증
         if (!routineEnabled) {
             if (date == null) {
                 throw new GeneralException(ErrorCode.TODO_DATE_REQUIRED);
             }
-        }
-
-        // 4. 루틴 투두 검증
-        if (routineEnabled) {
-            startDate = (request.getStartDate() != null)
-                    ? request.getStartDate()
-                    : LocalDate.now();
+        }else{  // 루틴 투두 검증
+            startDate = (request.getStartDate() != null) ? request.getStartDate() : LocalDate.now();
 
             if (request.getEndDate() == null) {
                 throw new GeneralException(ErrorCode.TODO_ROUTINE_END_DATE_REQUIRED);
             }
-
             endDate = request.getEndDate();
 
             if (startDate.isAfter(endDate)) {
@@ -189,11 +183,11 @@ public class TodoService {
             }
 
             if (request.getWeek() == null || request.getWeek().isEmpty()) {
-                throw new GeneralException(ErrorCode.TODO_ROUTINE_DAYS_REQUIRED);
+                throw new GeneralException(ErrorCode.TODO_ROUTINE_WEEK_REQUIRED);
             }
         }
 
-        // 5. Todo 저장 (정의)
+        // 투두 저장
         Todo todo = Todo.create(
                 request.getDescription(),
                 category,
@@ -203,14 +197,14 @@ public class TodoService {
         );
         Todo savedTodo = todoRepository.save(todo);
 
-        // 6. 일반 투두 → TodoDate 1개 생성
+        // 일반 투두 → TodoDate 1개 생성
         if (!routineEnabled) {
             TodoDate todoDate = TodoDate.create(savedTodo, date);
             todoDateRepository.save(todoDate);
             return TodoDetailResponse.from(savedTodo, List.of());
         }
 
-        // 7. 루틴 투두 → TodoWeek 저장
+        // 루틴 투두 → TodoWeek 저장
         List<TodoWeek> todoWeeks = request.getWeek().stream()
                 .map(week -> TodoWeek.of(savedTodo, week))
                 .toList();
@@ -221,7 +215,7 @@ public class TodoService {
 
     /** 투두 삭제 **/
     @Transactional
-    public void deleteTodo(Long userId, Long todoId){
+    public void deleteTodo(Long userId, Long todoId, LocalDate date){
         // 사용자 검증
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
@@ -232,12 +226,19 @@ public class TodoService {
         if (!todo.getCategory().getUser().getId().equals(user.getId())) {
             throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
         }
-        // 루틴이면 -> todoWeek 삭제
-        todoWeekRepository.deleteAllByTodo_Id(todoId);
-        // 투두 삭제
-        todoRepository.delete(todo);
+        // 그 날짜의 투두date 삭제
+        TodoDate todoDate = todoDateRepository.findByTodo_IdAndDate(todoId, date)
+                .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND));
+
+        todoDateRepository.delete(todoDate);
+
+        // 루틴 없는 투두 && todoDate 에 0개 -> 투두테이블에서 삭제
+        if (!todo.isRoutineEnabled() && !todoDateRepository.existsByTodo_Id(todoId)) {
+                 todoRepository.delete(todo);
+        }
     }
 
+    /** 완료 처리 **/
     @Transactional
     public TodoListResponse todoComplete(Long userId, Long todoId, LocalDate date) {
 
@@ -255,7 +256,7 @@ public class TodoService {
         }
 
         TodoDate todoDate = todoDateRepository.findByTodo_IdAndDate(todoId, date)
-                .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND)); // 없으면 ErrorCode 추가 필요
+                .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND));
 
         todoDate.toggleCompleted();
 

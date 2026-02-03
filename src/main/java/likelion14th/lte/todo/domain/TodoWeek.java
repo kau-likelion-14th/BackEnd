@@ -23,9 +23,9 @@ public class TodoWeek {
     private Week week;
 
     public static TodoWeek of(Todo todo, Week week) {
-        TodoWeek tw = new TodoWeek();
-        tw.todo = todo;
-        tw.week = week;
-        return tw;
+        TodoWeek todoWeek = new TodoWeek();
+        todoWeek.todo = todo;
+        todoWeek.week = week;
+        return todoWeek;
     }
 }

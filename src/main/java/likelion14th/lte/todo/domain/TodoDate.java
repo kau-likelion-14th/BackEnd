@@ -12,11 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_todo_date", columnNames = {"todo_id", "date"})
-        }
-)
+@Table(// 중복 불가 제약 조건
+        uniqueConstraints = {@UniqueConstraint(name = "uk_todo_date", columnNames = {"todo_id", "date"})})
 public class TodoDate{
 
     @Id
@@ -40,15 +37,15 @@ public class TodoDate{
 
     /** 생성 메서드 **/
     public static TodoDate create(Todo todo, LocalDate date) {
-        TodoDate td = new TodoDate();
-        td.todo = todo;
-        td.date = date;
-        td.completed = false;
-        td.completedAt = null;
-        return td;
+        TodoDate todoDate = new TodoDate();
+        todoDate.todo = todo;
+        todoDate.date = date;
+        todoDate.completed = false;
+        todoDate.completedAt = null;
+        return todoDate;
     }
 
-    /** 비즈니스 로직 **/
+    /** 비즈니스 로직 등 **/
     public void toggleCompleted() {
         this.completed = !this.completed;
         this.completedAt = this.completed ? LocalDateTime.now() : null;

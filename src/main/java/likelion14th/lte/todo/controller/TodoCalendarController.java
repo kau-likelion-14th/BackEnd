@@ -26,9 +26,8 @@ public class TodoCalendarController {
             @RequestParam int year,
             @RequestParam int month
     ) {
-        TodoCalendarMonthResponse res =
+        TodoCalendarMonthResponse response =
                 todoCalendarService.getMonthRemainingCounts(customUserDetails.getUserId(), year, month);
-
-        return ApiResponse.onSuccess(SuccessCode.TODO_CALENDAR_MONTH_GET_SUCCESS, res);
+        return ApiResponse.onSuccess(SuccessCode.TODO_CALENDAR_MONTH_GET_SUCCESS, response);
     }
 }

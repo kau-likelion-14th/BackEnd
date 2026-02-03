@@ -2,7 +2,6 @@ package likelion14th.lte.todo.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import likelion14th.lte.todo.domain.Week;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

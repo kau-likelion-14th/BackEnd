@@ -30,6 +30,8 @@ public enum SuccessCode implements BaseCode { // 성공
     TODO_CALENDAR_MONTH_GET_SUCCESS(HttpStatus.OK, "TODO_2003", "월별 캘린더 조회가 완료되었습니다."),
     TODO_COMPLETE_SUCCESS(HttpStatus.OK, "TODO_2004", "투두 완료 상태 변경이 완료되었습니다."),
     TODO_DELETE_SUCCESS(HttpStatus.OK, "TODO_2005", "투두 삭제가 완료되었습니다."),
+    TODO_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "TODO_2006", "투두 상세 수정이 완료되었습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

@@ -35,8 +35,6 @@ public class Todo {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
     /** 양방향 메서드 **/
 
     /** 생성자 및 비즈니스 로직 **/
