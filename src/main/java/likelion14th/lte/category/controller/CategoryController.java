@@ -2,8 +2,6 @@ package likelion14th.lte.category.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import likelion14th.lte.category.domain.Category;
-import likelion14th.lte.category.dto.request.CategoryCreateRequest;
 import likelion14th.lte.category.dto.response.CategoryResponse;
 import likelion14th.lte.category.service.CategoryService;
 import likelion14th.lte.global.api.ApiResponse;
@@ -25,9 +23,9 @@ public class CategoryController {
     @GetMapping
     @Operation(summary = "카테고리 목록 조회", description = "todo 추가 시에 보여줄, 로그인한 사용자의 카테고리 목록을 조회합니다.")
     public ApiResponse<List<CategoryResponse>> getAllCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal Long userId
     ){
-        List<CategoryResponse> categories = categoryService.getAllCategories(customUserDetails.getUserId());
+        List<CategoryResponse> categories = categoryService.getAllCategories(userId);
         return ApiResponse.onSuccess(SuccessCode.CATEGORY_LIST_GET_SUCCESS, categories);
     }
 }

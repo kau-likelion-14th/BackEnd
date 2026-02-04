@@ -22,12 +22,12 @@ public class TodoCalendarController {
     @GetMapping("/calendar")
     @Operation(summary = "월별 캘린더 조회", description = "해당 월의 각 날짜별 남은 투두 개수를 반환합니다.")
     public ApiResponse<TodoCalendarMonthResponse> getCalendarMonth(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @RequestParam int year,
             @RequestParam int month
     ) {
         TodoCalendarMonthResponse response =
-                todoCalendarService.getMonthRemainingCounts(customUserDetails.getUserId(), year, month);
+                todoCalendarService.getMonthRemainingCounts(userId, year, month);
         return ApiResponse.onSuccess(SuccessCode.TODO_CALENDAR_MONTH_GET_SUCCESS, response);
     }
 }

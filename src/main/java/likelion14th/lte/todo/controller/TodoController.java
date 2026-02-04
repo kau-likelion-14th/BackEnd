@@ -30,10 +30,10 @@ public class TodoController {
     @GetMapping
     @Operation(summary = "투두 리스트 조회", description = "선택한 날짜의 투두리스트를 조회합니다.")
     public ApiResponse<List<TodoListResponse>> getTodosByDate(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
-        List<TodoListResponse> todos = todoService.getTodosByDate(customUserDetails.getUserId(), date);
+        List<TodoListResponse> todos = todoService.getTodosByDate(userId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_LIST_GET_SUCCESS, todos);
     }
 
@@ -41,10 +41,10 @@ public class TodoController {
     @GetMapping("/{todoId}")
     @Operation(summary = "투두 상세 조회", description = "투두의 상세 정보를 조회합니다.")
     public ApiResponse<TodoDetailResponse> getTodoDetail(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long todoId
     ){
-        TodoDetailResponse todo = todoService.getTodoDetail(customUserDetails.getUserId(), todoId);
+        TodoDetailResponse todo = todoService.getTodoDetail(userId, todoId);
         return ApiResponse.onSuccess(SuccessCode.TODO_DETAIL_GET_SUCCESS, todo);
     }
 
@@ -52,12 +52,12 @@ public class TodoController {
     @PutMapping("/{todoId}")
     @Operation(summary = "투두 상세 수정", description = "투두의 상세 정보를 수정합니다.")
     public ApiResponse<TodoDetailResponse> updateTodoDetail(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long todoId,
             @RequestBody @Valid TodoUpdateRequest todoUpdateRequest
     ){
         TodoDetailResponse updatedResponse = todoService.updateTodoDetail(
-                customUserDetails.getUserId(),
+                userId,
                 todoId,
                 todoUpdateRequest
         );
@@ -68,11 +68,11 @@ public class TodoController {
     @PostMapping
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
     public ApiResponse<TodoDetailResponse> createTodo(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @RequestBody @Valid TodoCreateRequest todoCreateRequest,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
-        TodoDetailResponse createdResponse = todoService.createTodo(customUserDetails.getUserId(),todoCreateRequest, date);
+        TodoDetailResponse createdResponse = todoService.createTodo(userId,todoCreateRequest, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_CREATE_SUCCESS, createdResponse);
     }
 
@@ -80,11 +80,11 @@ public class TodoController {
     @DeleteMapping("/{todoId}/dates/{date}")
     @Operation(summary = "투두 삭제", description = "투두를 삭제합니다.")
     public ApiResponse<String> deleteTodo(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
-        todoService.deleteTodo(customUserDetails.getUserId(), todoId, date);
+        todoService.deleteTodo(userId, todoId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_DELETE_SUCCESS, "OK");
     }
 
@@ -92,11 +92,11 @@ public class TodoController {
     @PatchMapping("/{todoId}/dates/{date}/complete")
     @Operation(summary = "투두 완료 토글", description = "선택한 날짜의 투두 완료/해제를 토글합니다.")
     public ApiResponse<TodoListResponse> updateTodoComplete(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
-        TodoListResponse updatedResponse = todoService.todoComplete(customUserDetails.getUserId(), todoId, date);
+        TodoListResponse updatedResponse = todoService.todoComplete(userId, todoId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_COMPLETE_SUCCESS, updatedResponse);
     }
 }
