@@ -6,15 +6,11 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "user")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "users")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -35,6 +31,14 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String s3ImageKey;
 
-    // 카테고리 목록으로 관리
-
+    @Builder
+    public User (String providerId,  String username, String introduction,
+                 String profileImage, String userTag, String s3ImageKey) {
+        this.providerId = providerId;
+        this.username = username;
+        this.introduction = introduction;
+        this.profileImage = profileImage;
+        this.userTag = userTag;
+        this.s3ImageKey = s3ImageKey;
+    }
 }
