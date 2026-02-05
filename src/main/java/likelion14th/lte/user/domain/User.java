@@ -22,12 +22,14 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String introduction;
 
+    @Setter //얀 : 오류해결을 위해 임시로 붙임
     @Column(columnDefinition = "TEXT")
     private String profileImage;
 
     @Column(length = 16)
     private String userTag;
 
+    @Setter //얀 : 오류해결을 위해 임시로 붙임
     @Column(columnDefinition = "TEXT")
     private String s3ImageKey;
 

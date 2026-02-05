@@ -65,7 +65,7 @@ public class TodoController {
     }
 
     /** 투두 추가 **/
-    @PostMapping
+    @PostMapping("/dates/{date}")
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
     public ApiResponse<TodoDetailResponse> createTodo(
             @AuthenticationPrincipal Long userId,

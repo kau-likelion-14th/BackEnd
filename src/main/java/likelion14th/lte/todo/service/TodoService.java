@@ -12,6 +12,7 @@ import likelion14th.lte.todo.dto.request.TodoCreateRequest;
 import likelion14th.lte.todo.dto.request.TodoUpdateRequest;
 import likelion14th.lte.todo.dto.response.TodoDetailResponse;
 import likelion14th.lte.todo.dto.response.TodoListResponse;
+import likelion14th.lte.todo.generator.RoutineTodoDateGenerator;
 import likelion14th.lte.todo.repository.TodoDateRepository;
 import likelion14th.lte.todo.repository.TodoRepository;
 import likelion14th.lte.todo.repository.TodoWeekRepository;
@@ -33,6 +34,7 @@ public class TodoService {
     private final UserRepository userRepository;
     private final TodoWeekRepository todoWeekRepository;
     private final TodoDateRepository todoDateRepository;
+    private final RoutineTodoDateGenerator routineTodoDateGenerator;
 
     /** 투두리스트 조회 **/
     @Transactional
@@ -171,7 +173,9 @@ public class TodoService {
                 throw new GeneralException(ErrorCode.TODO_DATE_REQUIRED);
             }
         }else{  // 루틴 투두 검증
-            startDate = (request.getStartDate() != null) ? request.getStartDate() : LocalDate.now();
+            startDate = (request.getStartDate() != null)
+                    ? request.getStartDate()
+                    : LocalDate.now();
 
             if (request.getEndDate() == null) {
                 throw new GeneralException(ErrorCode.TODO_ROUTINE_END_DATE_REQUIRED);
@@ -210,6 +214,12 @@ public class TodoService {
                 .toList();
         todoWeekRepository.saveAll(todoWeeks);
 
+        // 루린 투두 -> 생성 시 startDate부터 1년치(또는 endDate까지) todo_date 미리 생성
+        LocalDate start = startDate;
+        LocalDate endLimit = start.plusYears(1).minusDays(1);
+        LocalDate end = endDate.isBefore(endLimit) ? endDate : endLimit;
+
+        routineTodoDateGenerator.generate(savedTodo, start, end);
         return TodoDetailResponse.from(savedTodo, todoWeeks);
     }
 
