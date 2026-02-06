@@ -53,6 +53,7 @@ public class TodoService {
     }
 
     /** 투두 상세 조회 **/
+    @Transactional
     public TodoDetailResponse getTodoDetail(Long userId, Long todoId){
         // 사용자 검증
         User user = userRepository.findById(userId)
@@ -80,6 +81,7 @@ public class TodoService {
     }
 
     /** 투두 상세 수정 **/
+    @Transactional
     public TodoDetailResponse updateTodoDetail(
             Long userId,
             Long todoId,
@@ -95,6 +97,9 @@ public class TodoService {
         if (!todo.getCategory().getUser().getId().equals(user.getId())) {
             throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
         }
+
+        boolean wasRoutineEnabled = todo.isRoutineEnabled(); // 수정 전 상태 저장
+
         // 카테고리  검증
         Category category = categoryRepository
                 .findByUser_IdAndCategoryName(user.getId(), request.getCategoryName())
@@ -133,14 +138,36 @@ public class TodoService {
         // TodoWeek 처리
         todoWeekRepository.deleteAllByTodo_Id(todoId);
 
+        List<TodoWeek> todoWeeks = List.of();
         if (routineEnabled) {
-            List<TodoWeek> todoWeeks = request.getWeek().stream()
+            todoWeeks = request.getWeek().stream()
                     .map(week -> TodoWeek.of(todo, week))
-                    .collect(Collectors.toList());
-
+                    .toList();
             todoWeekRepository.saveAll(todoWeeks);
+        }
 
+        // TodoDate 동기화
+        LocalDate today = LocalDate.now();
+
+        // 루틴이었거나 루틴이 될 거면, 미래 TodoDate 정리
+        if (wasRoutineEnabled || routineEnabled) {
+            todoDateRepository.deleteAllByTodo_IdAndDateGreaterThanEqual(todoId, today);
+        }
+
+        if (routineEnabled) {
+            // 새 규칙으로 오늘~1년(or endDate) 범위 다시 생성
+            LocalDate start = startDate.isAfter(today) ? startDate : today;
+
+            LocalDate endLimit = start.plusYears(1).minusDays(1);
+            LocalDate end = endDate.isBefore(endLimit) ? endDate : endLimit;
+
+            routineTodoDateGenerator.generate(todo, start, end);
             return TodoDetailResponse.from(todo, todoWeeks);
+        }
+
+        // 루틴 -> 일반 막기 ( 걍 삭제 하시길.)
+        if (wasRoutineEnabled && !routineEnabled) {
+            throw new GeneralException(ErrorCode.TODO_ROUTINE_TO_NORMAL_NOT_SUPPORTED);
         }
 
         return TodoDetailResponse.from(todo, List.of());

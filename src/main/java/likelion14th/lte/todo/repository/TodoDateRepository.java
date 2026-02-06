@@ -21,6 +21,7 @@ public interface TodoDateRepository extends JpaRepository<TodoDate, Long> {
     );
     boolean existsByTodo_Id(Long todoId);
 
+    void deleteAllByTodo_IdAndDateGreaterThanEqual(Long todoId, LocalDate from);
 
     @Query("""
     select td.date, count(td)
