@@ -1,6 +1,6 @@
 package likelion14th.lte.todo.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.todo.domain.TodoDate;
@@ -24,7 +24,7 @@ public class TodoCalenderService {
     private final TodoDateRepository todoDateRepository;
 
     /** 월별 캘린더: 날짜별 남은 투두 개수 **/
-    @Transactional
+    @Transactional(readOnly = true)
     public TodoCalendarMonthResponse getMonthRemainingCounts(Long userId, int year, int month) {
 
         // 사용자 검증
@@ -36,7 +36,7 @@ public class TodoCalenderService {
 
         // 해당 월의 미완료 TodoDate 조회
         List<TodoDate> uncompleted = todoDateRepository
-                .findAllByTodo_Category_User_IdAndDateBetweenAndCompletedAtIsNull(userId, start, end);
+                .findAllByTodo_Category_User_IdAndDateBetweenAndCompletedFalse(userId, start, end);
 
         // date 기준으로 count
         Map<LocalDate, Long> counted = uncompleted.stream()
@@ -45,7 +45,7 @@ public class TodoCalenderService {
                         java.util.stream.Collectors.counting()
                 ));
 
-        // 3) 월 전체 날짜 0 -> 있는 날짜만 덮어쓰기
+        // 월 전체 날짜 0 -> 있는 날짜만 덮어쓰기
         Map<LocalDate, Long> result = new LinkedHashMap<>();
         for (int day = 1; day <= start.lengthOfMonth(); day++) {
             LocalDate mday = start.withDayOfMonth(day);

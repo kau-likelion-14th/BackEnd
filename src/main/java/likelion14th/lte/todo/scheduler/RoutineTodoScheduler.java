@@ -31,15 +31,16 @@ public class RoutineTodoScheduler {
     @Transactional
     public void generateRoutineTodoDates() {
         LocalDate today = LocalDate.now();
-        LocalDate oneYearLater = today.plusYears(1);
-
+        // 루틴 투두 찾기
         List<Todo> routineTodos = todoRepository.findAllByRoutineEnabledTrue();
 
         for (Todo todo : routineTodos) {
-            LocalDate start = todo.getStartDate().isAfter(today) ? todo.getStartDate() : today;
-            LocalDate end = todo.getEndDate().isBefore(oneYearLater) ? todo.getEndDate() : oneYearLater;
+            if (todo.getStartDate() == null || todo.getEndDate() == null) continue;
 
-            routineTodoDateGenerator.generate(todo, start, end);
+            LocalDate start = todo.getStartDate();
+            LocalDate end = todo.getEndDate();
+            // 오늘부터 1년치 생성
+            routineTodoDateGenerator.generate(todo, start, end, today);
         }
     }
 }
