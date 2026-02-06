@@ -55,7 +55,7 @@ public class UserProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
 
-        if(user.getS3ImageKey()!=null){
+        if(user.getS3ImageKey()!=null||!user.getProfileImage().isBlank()){
             s3Utils.deleteFile(user.getS3ImageKey());
         }
 

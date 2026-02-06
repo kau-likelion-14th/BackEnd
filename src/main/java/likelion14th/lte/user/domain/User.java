@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -40,7 +41,7 @@ public class User extends BaseEntity {
     private List<Follow> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Follow> followings =new ArrayList<>();
+    private List<Follow> followings = new ArrayList<>();
 
 
     @Builder
