@@ -1,5 +1,6 @@
 package likelion14th.lte.login.service;
 
+import io.jsonwebtoken.io.IOException;
 import tools.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ErrorCode;
@@ -55,6 +56,7 @@ public class AuthService {
         saveOrUpdateRefreshToken(user, refreshToken, refreshTokenExpiration);
 
         // 응답 (유저 정보 + accessToken)
+
         return AuthResponse.from(user, accessToken);
     }
 
@@ -174,5 +176,8 @@ public class AuthService {
 
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+    }
+    public void test(){
+        throw new IOException("test");
     }
 }

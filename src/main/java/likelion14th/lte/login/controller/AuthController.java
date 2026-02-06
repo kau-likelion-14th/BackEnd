@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ApiResponse;
 import likelion14th.lte.global.api.SuccessCode;
+import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.login.dto.request.KakaoCodeRequest;
 import likelion14th.lte.login.dto.response.AuthResponse;
 import likelion14th.lte.login.service.AuthService;
@@ -40,6 +41,7 @@ public class AuthController {
     public ApiResponse<Void> logout(HttpServletRequest request) {
         // 로그아웃
         authService.logout(request);
+
         return ApiResponse.onSuccess(SuccessCode.USER_LOGOUT_SUCCESS, null);
     }
 
@@ -50,4 +52,12 @@ public class AuthController {
         authService.withdraw(request);
         return ApiResponse.onSuccess(SuccessCode.USER_DELETE_SUCCESS, null);
     }
+
+    @PostMapping("/test")
+    public ApiResponse<Void> test() {
+        authService.test();
+        return ApiResponse.onSuccess(SuccessCode.OK,null);
+    }
+
+
 }

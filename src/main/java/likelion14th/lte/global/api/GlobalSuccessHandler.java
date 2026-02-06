@@ -1,17 +1,17 @@
-package likelion14th.lte.global.config;
+package likelion14th.lte.global.api;
 
-import likelion14th.lte.global.api.ApiResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 // 성공 응답에 대해 ApiResponse 안의 HttpStatus를 실제 HTTP Status로 반영하는 핸들러
-@RestControllerAdvice
+@RestControllerAdvice(annotations = {RestController.class})
 public class GlobalSuccessHandler implements ResponseBodyAdvice<Object> {
 
     @Override
