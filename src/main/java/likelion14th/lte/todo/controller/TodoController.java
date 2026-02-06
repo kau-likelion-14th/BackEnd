@@ -66,12 +66,12 @@ public class TodoController {
     }
 
     /** 투두 추가 **/
-    @PostMapping("/dates/{date}")
+    @PostMapping
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
     public ApiResponse<TodoDetailResponse> createTodo(
             @AuthenticationPrincipal Long userId,
             @RequestBody @Valid TodoCreateRequest todoCreateRequest,
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
         TodoDetailResponse createdResponse = todoService.createTodo(userId,todoCreateRequest, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_CREATE_SUCCESS, createdResponse);
