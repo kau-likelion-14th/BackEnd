@@ -46,8 +46,10 @@ public class TodoDate{
     }
 
     /** 비즈니스 로직 등 **/
-    public void toggleCompleted() {
-        this.completed = !this.completed;
-        this.completedAt = this.completed ? LocalDateTime.now() : null;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+        this.completedAt = completed ? LocalDateTime.now() : null;
     }
+
+
 }

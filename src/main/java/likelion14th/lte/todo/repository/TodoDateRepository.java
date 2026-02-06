@@ -23,18 +23,6 @@ public interface TodoDateRepository extends JpaRepository<TodoDate, Long> {
 
     void deleteAllByTodo_IdAndDateGreaterThanEqual(Long todoId, LocalDate from);
 
-    @Query("""
-    select td.date, count(td)
-    from TodoDate td
-    where td.todo.category.user.id = :userId
-      and td.date between :start and :end
-      and td.completed = false
-    group by td.date
-    """)
-    List<Object[]> countUncompletedByDate(
-            @Param("userId") Long userId,
-            @Param("start") LocalDate start,
-            @Param("end") LocalDate end
-    );
+    List<TodoDate> findAllByTodo_Category_User_IdAndDateBetweenAndCompletedAtIsNull( Long userId, LocalDate start, LocalDate end);
 }
 

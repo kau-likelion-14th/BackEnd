@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import likelion14th.lte.global.api.ApiResponse;
 import likelion14th.lte.global.api.SuccessCode;
+import likelion14th.lte.todo.dto.request.TodoCompleteUpdateRequest;
 import likelion14th.lte.todo.dto.request.TodoCreateRequest;
 import likelion14th.lte.todo.dto.request.TodoUpdateRequest;
 import likelion14th.lte.todo.dto.response.TodoDetailResponse;
@@ -95,9 +96,10 @@ public class TodoController {
     public ApiResponse<TodoListResponse> updateTodoComplete(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long todoId,
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestBody @Valid TodoCompleteUpdateRequest request
     ) {
-        TodoListResponse updatedResponse = todoService.todoComplete(userId, todoId, date);
+        TodoListResponse updatedResponse = todoService.todoComplete(userId, todoId, date, request.getCompleted());
         return ApiResponse.onSuccess(SuccessCode.TODO_COMPLETE_SUCCESS, updatedResponse);
     }
 }

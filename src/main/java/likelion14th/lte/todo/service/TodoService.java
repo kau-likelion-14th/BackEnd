@@ -277,7 +277,7 @@ public class TodoService {
 
     /** 완료 처리 **/
     @Transactional
-    public TodoListResponse todoComplete(Long userId, Long todoId, LocalDate date) {
+    public TodoListResponse todoComplete(Long userId, Long todoId, LocalDate date, boolean completed) {
 
         // 사용자 검증
         User user = userRepository.findById(userId)
@@ -292,10 +292,13 @@ public class TodoService {
             throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
         }
 
+        // TodoDate 존재 검증
         TodoDate todoDate = todoDateRepository.findByTodo_IdAndDate(todoId, date)
                 .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND));
 
-        todoDate.toggleCompleted();
+        if (todoDate.isCompleted() != completed) {
+            todoDate.setCompleted(completed);
+        }
 
         return TodoListResponse.from(todo, todoDate.isCompleted());
     }
