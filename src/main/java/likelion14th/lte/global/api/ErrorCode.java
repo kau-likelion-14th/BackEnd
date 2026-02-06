@@ -22,6 +22,10 @@ public enum ErrorCode implements BaseCode { // 실패
     TOKEN_NO_AUTH(HttpStatus.FORBIDDEN, "JWT_4033", "권한 정보가 없는 token입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT_4011", "token 유효기간이 만료되었습니다."),
 
+    // Kakao Login
+    KAKAO_AUTH_FAILED(HttpStatus.UNAUTHORIZED, "KAKAO_4011", "카카오 인증에 실패했습니다."),
+    KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO_5021", "카카오 서버 응답에 실패했습니다."),
+
     // Image Upload
     IMAGE_FILE_EMPTY(HttpStatus.BAD_REQUEST, "IMG_4001", "업로드된 파일이 비어 있습니다."),
     IMAGE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "IMG_4151", "허용되지 않은 이미지 형식입니다."),

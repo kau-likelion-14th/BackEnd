@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
+    Optional<User> findByProviderId(String providerId);
     Optional<User> findById(Long id);
     Page<User> findByUsernameContainingIgnoreCase(String nickName, Pageable pageable);
     Optional<User> findByUserTag(String UserTag);
