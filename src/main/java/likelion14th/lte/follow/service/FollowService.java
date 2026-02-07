@@ -43,7 +43,7 @@ public class FollowService {
 
     //팔로우
     @Transactional
-    public void followUser(Long from_userId, Long to_userId) {
+    public FollowUserResponse followUser(Long from_userId, Long to_userId) {
         User fromUser = userRepository.findById(from_userId).orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
         User toUser = userRepository.findById(to_userId).orElseThrow(()->new GeneralException(ErrorCode.FOLLOW_TARGET_NOT_FOUND));
 
@@ -60,6 +60,7 @@ public class FollowService {
                 .build();
         
         followRepository.save(follow);
+        return FollowUserResponse.from(follow.getToUser());
     }
     //언팔
     @Transactional
