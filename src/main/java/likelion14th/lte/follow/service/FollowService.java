@@ -121,12 +121,10 @@ public class FollowService {
                 .map(FollowUserResponse::from);
     }
 
-    //팔로우 가능한 목록 랜덤 조회
+    //팔로우 가능한 목록 조회
     @Transactional(readOnly = true)
-    public Page<FollowUserResponse> getRandomCanFollowers(Long userId, Pageable pageable){
-        // DB 쿼리 레벨에서 필터링된 랜덤 유저 가져오기
-        Page<User> canFollowUsers = userRepository.findRandomCanFollowUsers(userId, pageable);
-        
+    public Page<FollowUserResponse> getCanFollowers(Long userId, Pageable pageable){
+        Page<User> canFollowUsers = userRepository.findCanFollowUsers(userId, pageable);
         return canFollowUsers.map(FollowUserResponse::from);
     }
 

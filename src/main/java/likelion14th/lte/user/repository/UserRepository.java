@@ -16,10 +16,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Page<User> findByUsernameContainingIgnoreCase(String nickName, Pageable pageable);
     Optional<User> findByUserTag(String UserTag);
 
-    //팔로우 가능한 유저 랜덤목록
+    //팔로우 가능한 유저 목록 (정렬 가능)
     @Query("SELECT u FROM User u " +
            "WHERE u.id != :userId " +
-           "AND NOT EXISTS (SELECT f FROM Follow f WHERE f.fromUser.id = :userId AND f.toUser.id = u.id) " +
-           "ORDER BY FUNCTION('RAND')")
-    Page<User> findRandomCanFollowUsers(@Param("userId") Long userId, Pageable pageable);
+           "AND NOT EXISTS (SELECT f FROM Follow f WHERE f.fromUser.id = :userId AND f.toUser.id = u.id)")
+    Page<User> findCanFollowUsers(@Param("userId") Long userId, Pageable pageable);
 }
