@@ -43,11 +43,11 @@ public class FollowService {
 
     //팔로우
     @Transactional
-    public FollowUserResponse followUser(Long from_userId, Long to_userId) {
-        User fromUser = userRepository.findById(from_userId).orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
-        User toUser = userRepository.findById(to_userId).orElseThrow(()->new GeneralException(ErrorCode.FOLLOW_TARGET_NOT_FOUND));
+    public FollowUserResponse followUser(Long fromUserId, Long toUserId) {
+        User fromUser = userRepository.findById(fromUserId).orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
+        User toUser = userRepository.findById(toUserId).orElseThrow(()->new GeneralException(ErrorCode.FOLLOW_TARGET_NOT_FOUND));
 
-        if(from_userId.equals(to_userId)){
+        if(fromUserId.equals(toUserId)){
             throw new GeneralException(ErrorCode.FOLLOW_SELF_NOT_ALLOWED);
         }
         if(followRepository.existsByFromUserAndToUser(fromUser,toUser)){
@@ -77,18 +77,22 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
-    //팔로워 목록 조회
+    //팔로워 목록 조회 (나를 팔로우하는 사람들)
     @Transactional(readOnly = true)
-    public List<FollowUserResponse> getFollowers(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
-        return user.getFollowers().stream().map(Follow::getToUser).map(FollowUserResponse::from).toList();
+    public List<FollowUserResponse> getFollowers(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+        return user.getFollowers().stream()
+                .map(f -> FollowUserResponse.from(f.getFromUser()))
+                .toList();
     }
 
-    //팔로잉 목록 조회
+    //팔로잉 목록 조회 (내가 팔로우하는 사람들)
     @Transactional(readOnly = true)
-    public List<FollowUserResponse> getFollowings(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
-        return user.getFollowings().stream().map(Follow::getFromUser).map(FollowUserResponse::from).toList();
+    public List<FollowUserResponse> getFollowings(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+        return user.getFollowings().stream()
+                .map(f -> FollowUserResponse.from(f.getToUser()))
+                .toList();
     }
 
     //팔로우 검색 기능

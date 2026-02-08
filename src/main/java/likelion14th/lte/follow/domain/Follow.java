@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="follow")
-public class Follow extends BaseEntity{
+public class Follow extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.PRIVATE)
@@ -23,4 +23,5 @@ public class Follow extends BaseEntity{
 
     @ManyToOne
     private User toUser;
+
 }
