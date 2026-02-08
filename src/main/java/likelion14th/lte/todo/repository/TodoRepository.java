@@ -1,6 +1,5 @@
 package likelion14th.lte.todo.repository;
 
-
 import likelion14th.lte.todo.domain.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,7 @@
 package likelion14th.lte.todo.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import likelion14th.lte.todo.domain.Week;
+import likelion14th.lte.todo.domain.WeekEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,5 +25,5 @@ public class TodoCreateRequest {
 
     private LocalDate endDate;
 
-    private Set<Week> week;
+    private Set<WeekEnum> week;
 }

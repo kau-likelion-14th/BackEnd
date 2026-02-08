@@ -7,7 +7,7 @@ import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.todo.domain.Todo;
 import likelion14th.lte.todo.domain.TodoDate;
 import likelion14th.lte.todo.domain.TodoWeek;
-import likelion14th.lte.todo.domain.Week;
+import likelion14th.lte.todo.domain.WeekEnum;
 import likelion14th.lte.todo.dto.request.TodoCreateRequest;
 import likelion14th.lte.todo.dto.request.TodoUpdateRequest;
 import likelion14th.lte.todo.dto.response.TodoDetailResponse;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +65,7 @@ public class TodoService {
             boolean routineEnabled,
             LocalDate reqStartDate,
             LocalDate reqEndDate,
-            Set<Week> reqWeek
+            Set<WeekEnum> reqWeek
     ) {
         if (!routineEnabled) {
             return new RoutineInfo(null, null);

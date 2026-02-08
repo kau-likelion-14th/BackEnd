@@ -2,7 +2,7 @@ package likelion14th.lte.todo.dto.response;
 
 import likelion14th.lte.todo.domain.Todo;
 import likelion14th.lte.todo.domain.TodoWeek;
-import likelion14th.lte.todo.domain.Week;
+import likelion14th.lte.todo.domain.WeekEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ public class TodoDetailResponse {
     private boolean routineEnabled;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Set<Week> week;
+    private Set<WeekEnum> week;
 
 
     public static TodoDetailResponse from(
@@ -30,7 +30,7 @@ public class TodoDetailResponse {
             List<TodoWeek> todoWeeks
     ) {
         // Set 으로 변환하는 과정
-        Set<Week> weeks = todoWeeks.stream()
+        Set<WeekEnum> weeks = todoWeeks.stream()
                 .map(TodoWeek::getWeek)
                 .collect(Collectors.toSet());
 

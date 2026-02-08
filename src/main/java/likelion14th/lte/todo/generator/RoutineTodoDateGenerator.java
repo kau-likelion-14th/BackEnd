@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import likelion14th.lte.todo.domain.TodoWeek;
-import likelion14th.lte.todo.domain.Week;
+import likelion14th.lte.todo.domain.WeekEnum;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -46,7 +46,7 @@ public class RoutineTodoDateGenerator {
                 todoWeekRepository.findAllByTodo_Id(todo.getId())
                         .stream()
                         .map(TodoWeek::getWeek)// -> enum
-                        .map(Week::toDayOfWeek)//->DayOfWeek
+                        .map(WeekEnum::toDayOfWeek)//->DayOfWeek
                         .collect(Collectors.toSet());
 
         if (allowedDays.isEmpty()){

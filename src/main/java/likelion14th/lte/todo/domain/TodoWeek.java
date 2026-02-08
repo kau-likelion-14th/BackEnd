@@ -20,9 +20,9 @@ public class TodoWeek {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Week week;
+    private WeekEnum week;
 
-    public static TodoWeek of(Todo todo, Week week) {
+    public static TodoWeek of(Todo todo, WeekEnum week) {
         TodoWeek todoWeek = new TodoWeek();
         todoWeek.todo = todo;
         todoWeek.week = week;

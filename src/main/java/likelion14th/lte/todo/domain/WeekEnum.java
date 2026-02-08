@@ -2,7 +2,7 @@ package likelion14th.lte.todo.domain;
 
 import java.time.DayOfWeek;
 
-public enum Week {
+public enum WeekEnum {
     MON(DayOfWeek.MONDAY),
     TUE(DayOfWeek.TUESDAY),
     WED(DayOfWeek.WEDNESDAY),
@@ -13,7 +13,7 @@ public enum Week {
 
     private final DayOfWeek dayOfWeek;
 
-    Week(DayOfWeek dayOfWeek) {
+    WeekEnum(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
 

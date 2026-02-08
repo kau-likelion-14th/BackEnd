@@ -8,7 +8,6 @@ import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.user.domain.User;
 import likelion14th.lte.user.repository.UserRepository;
-import likelion14th.lte.utils.exception.UtilException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

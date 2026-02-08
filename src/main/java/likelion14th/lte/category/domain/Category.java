@@ -11,11 +11,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @NoArgsConstructor
-/*
-TODO : 사용자에 Category 리스트 추가 고려 -> 양방향 메서드,
-사용자와의 관계 수정 (뭐 하나는 남겨야한다든가 그런거)
- todo 와의 관계 설정
- */
 public class Category extends BaseEntity {
 
     /** 필드 **/
