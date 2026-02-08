@@ -51,7 +51,7 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void deleteProfileImage(Long userId) {
+    public UserProfileResponse deleteProfileImage(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new GeneralException(ErrorCode.USER_NOT_FOUND));
 
@@ -61,6 +61,7 @@ public class UserProfileService {
 
         user.setProfileImage(null);
         user.setS3ImageKey(null);
+        return UserProfileResponse.from(user);
 
     }
 
