@@ -27,16 +27,22 @@ public enum ErrorCode implements BaseCode { // 실패
     KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO_5021", "카카오 서버 응답에 실패했습니다."),
 
     // Image Upload
-
     IMAGE_FILE_EMPTY(HttpStatus.BAD_REQUEST, "IMG_4001", "업로드된 파일이 비어 있습니다."),
     IMAGE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "IMG_4151", "허용되지 않은 이미지 형식입니다."),
     IMAGE_TOO_LARGE(HttpStatus.CONTENT_TOO_LARGE, "IMG_4131", "이미지 파일 용량이 너무 큽니다."),
     IMAGE_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMG_5001", "이미지 처리에 실패했습니다."),
-    // S3 Upload
 
+    // S3 Upload
     S3_UPLOAD_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5031", "파일 저장에 실패했습니다."),
     S3_KEY_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3_5001", "파일 키 생성에 실패했습니다."),
-    S3_DELETE_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5032", "파일 삭제에 실패했습니다.");
+    S3_DELETE_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "S3_5032", "파일 삭제에 실패했습니다."),
+
+    //follow
+    FOLLOW_SELF_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "FOLLOW_4001", "자기 자신을 팔로우할 수 없습니다."),
+    FOLLOW_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOW_4041", "팔로우 대상 사용자가 존재하지 않습니다."),
+    FOLLOW_ALREADY_EXISTS(HttpStatus.CONFLICT, "FOLLOW_4091", "이미 팔로우한 사용자입니다."),
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOW_4042", "팔로우 관계가 존재하지 않습니다."),
+    INVALID_HANDLE_FORMAT(HttpStatus.BAD_REQUEST, "F002", "유저 검색 형식이 올바르지 않습니다. (예: 김동현#1234)");
 
     private final HttpStatus httpStatus;
     private final String code;
