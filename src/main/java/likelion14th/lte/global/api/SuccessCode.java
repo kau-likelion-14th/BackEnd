@@ -23,7 +23,21 @@ public enum SuccessCode implements BaseCode { // 성공
     FOLLOW_SEARCH_SUCCESS(HttpStatus.OK, "FOLLOW_2003", "팔로우 가능한 유저 검색이 완료되었습니다."),
 
     // 형이 추가한 코드
-    MAJORSYNC_BULK_SUCCESS(HttpStatus.OK, "Sync_2012", "DB 동기화가 완료되었습니다.");
+    MAJORSYNC_BULK_SUCCESS(HttpStatus.OK, "Sync_2012", "DB 동기화가 완료되었습니다."),
+
+    // Category
+    CATEGORY_LIST_GET_SUCCESS(HttpStatus.OK, "CATEGORY_2001", "카테고리 목록 조회가 완료되었습니다."),
+
+    // 투두
+    TODO_LIST_GET_SUCCESS(HttpStatus.OK, "TODO_2001", "투두 목록 조회가 완료되었습니다."),
+    TODO_DETAIL_GET_SUCCESS(HttpStatus.OK, "TODO_2002", "투두 상세 조회가 완료되었습니다."),
+    TODO_CREATE_SUCCESS(HttpStatus.CREATED, "TODO_2011", "투두 생성이 완료되었습니다."),
+    TODO_CALENDAR_MONTH_GET_SUCCESS(HttpStatus.OK, "TODO_2003", "월별 캘린더 조회가 완료되었습니다."),
+    TODO_COMPLETE_SUCCESS(HttpStatus.OK, "TODO_2004", "투두 완료 상태 변경이 완료되었습니다."),
+    TODO_DELETE_SUCCESS(HttpStatus.OK, "TODO_2005", "투두 삭제가 완료되었습니다."),
+    TODO_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "TODO_2006", "투두 상세 수정이 완료되었습니다."),
+
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;
