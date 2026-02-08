@@ -22,8 +22,10 @@ public enum SuccessCode implements BaseCode { // 성공
     FOLLOW_LIST_GET_SUCCESS(HttpStatus.OK, "FOLLOW_2002", "팔로우 목록 조회가 완료되었습니다."),
     FOLLOW_SEARCH_SUCCESS(HttpStatus.OK, "FOLLOW_2003", "팔로우 가능한 유저 검색이 완료되었습니다."),
 
-    // 형이 추가한 코드
-    MAJORSYNC_BULK_SUCCESS(HttpStatus.OK, "Sync_2012", "DB 동기화가 완료되었습니다."),
+    // profile success
+    PROFILE_PUT_SUCCESS(HttpStatus.OK, "PROFILE_2001", "프로필 수정(추가)이 완료되었습니다."),
+    PROFILE_DELETE_SUCCESS(HttpStatus.OK, "PROFILE_2002", "프로필 삭제가 완료되었습니다."),
+
 
     // Category
     CATEGORY_LIST_GET_SUCCESS(HttpStatus.OK, "CATEGORY_2001", "카테고리 목록 조회가 완료되었습니다."),
