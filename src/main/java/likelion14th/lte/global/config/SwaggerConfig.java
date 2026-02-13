@@ -34,19 +34,16 @@ public class SwaggerConfig {
         Server localServer = new Server()
                 .url("http://localhost:8080")
                 .description("Lte Local Server");
-        //TODO 배포서버 주소 추가할것
-        /*
+
         Server httpServer = new Server()
-                .url("http://canfly.ap-northeast-2.elasticbeanstalk.com/")
-                .description("Canfly HTTP Server");
-        */
+                .url("http://lte-dev-env.eba-xaqgpxhu.ap-northeast-2.elasticbeanstalk.com")
+                .description("LTE HTTP Server");
+
         return new OpenAPI()
                 .info(apiInfo)
                 .addSecurityItem(securityRequirement)
                 .components(components)
-                .servers(List.of(localServer));
-                //TODO 배포시 수정할것
-                //.servers(List.of(localServer, httpServer));
+                .servers(List.of(localServer, httpServer));
     }
 
     @Bean
