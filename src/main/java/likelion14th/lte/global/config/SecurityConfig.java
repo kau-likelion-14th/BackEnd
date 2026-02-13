@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/oauth2/**",             // 카카오 OAuth 리디렉션
                                 "/login/oauth2/**",
+                                "/error",
 
                                 "/api/auth/kakao",
                                 "/api/auth/reissue",
@@ -46,6 +47,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login(withDefaults())
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
