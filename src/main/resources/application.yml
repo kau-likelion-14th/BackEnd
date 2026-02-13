@@ -3,7 +3,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   profiles:
-    active: local
+    #active: local
 
   security:
     oauth2:
@@ -11,8 +11,9 @@ spring:
         registration:
           kakao:
             client-id: ${KAKAO_REST_API_KEY}
-            client-secret: ${KAKAO_CLIENT_SECRET}
+            #client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            # 배포 후 uri
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
@@ -30,18 +31,22 @@ spring:
       max-request-size: 50MB
 
 #JWT
-JWT_SECRET: ${JWT_SECRET}
-JWT_EXPIRATION: ${JWT_EXPIRATION}                  # Access(ms)
-JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}  # Refresh(ms)
+jwt:
+  secret: ${JWT_SECRET}
+  access-exp-ms: ${JWT_EXPIRATION:3600000}
+  refresh-exp-ms: ${JWT_REFRESH_EXPIRATION:1209600000}
 
 #s3
 cloud:
   aws:
-    access-key: ${AWS_ACCESS_KEY:default-access-key}
-    secret-key: ${AWS_SECRET_KEY:default-secret-key}
-    region: ${AWS_REGION:ap-northeast-2}
-    bucket: ${AWS_BUCKET:default-bucket}
-
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION}
+    s3:
+      bucket: ${AWS_BUCKET}
+      path:
+        location: user/
 server:
   tomcat:
     max-swallow-size: -1
@@ -51,12 +56,11 @@ server:
 springdoc:
   api-docs:
     path: /v3/api-docs
-    # Swagger? OpenAPI ??? ???? ?? ??
+
   swagger-ui:
     path: /swagger-ui.html
-    # Swaggerd UI ??? URL ?? ??
-    display-request-duration: true # ??? ???? ? ?? ?? ?? ??
-    operations-sorter: method # ??? ?? ???? API ??---
+    display-request-duration: true
+    operations-sorter: method
 
 ---
 
