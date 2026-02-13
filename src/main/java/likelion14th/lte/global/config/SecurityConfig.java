@@ -35,7 +35,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/oauth2/**",             // 카카오 OAuth 리디렉션
                                 "/login/oauth2/**",
-                                "/error",
 
                                 "/api/auth/kakao",
                                 "/api/auth/reissue",
@@ -47,8 +46,6 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-
-                .oauth2Login(withDefaults())
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -59,7 +56,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
