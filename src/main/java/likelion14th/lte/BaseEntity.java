@@ -1,4 +1,4 @@
-package likelion14th.lte.Entity;
+package likelion14th.lte;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
