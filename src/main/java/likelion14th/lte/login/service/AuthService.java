@@ -1,5 +1,6 @@
 package likelion14th.lte.login.service;
 
+import io.jsonwebtoken.Claims;
 import tools.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ErrorCode;
@@ -90,17 +91,16 @@ public class AuthService {
 
         String accessToken = bearer.substring(7);
 
-        try {
-            jwtProvider.validate(accessToken);
-        } catch (Exception e) {
-            throw new GeneralException(ErrorCode.TOKEN_INVALID);
-        }
-
+        // accessToken이 만료돼도 Claims는 뽑을 수 있어야 재발급이 가능함
         Long userId;
-
         try {
-            userId = jwtProvider.getUserId(accessToken);
-        } catch (NumberFormatException e) {
+            Claims claims = jwtProvider.parseClaims(accessToken); // 만료면 ExpiredJwtException에서 claims 반환
+            String subject = claims.getSubject();
+            if (subject == null || subject.isBlank()) {
+                throw new GeneralException(ErrorCode.TOKEN_INVALID);
+            }
+            userId = Long.parseLong(subject);
+        } catch (Exception e) {
             throw new GeneralException(ErrorCode.TOKEN_INVALID);
         }
 
