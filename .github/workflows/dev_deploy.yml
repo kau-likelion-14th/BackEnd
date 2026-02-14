@@ -21,7 +21,7 @@ jobs:
 
       - name: Create .env file from secret
         run: |
-          printf '%s' "${{ secrets.LTE_ENV }}" > .env.env
+          printf '%s' "${{ secrets.LTE_ENV }}" > .env
           chmod 600 .env
 
       - name: Set up JDK 21
