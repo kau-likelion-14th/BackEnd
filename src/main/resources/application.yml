@@ -11,8 +11,9 @@ spring:
         registration:
           kakao:
             client-id: ${KAKAO_REST_API_KEY}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            #client-secret: ${KAKAO_CLIENT_SECRET}
+            #redirect-uri: http://localhost:3000/login/oauth2/code/kakao
+            redirect-uri : https://lte-frontend.netlify.app/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
@@ -47,6 +48,7 @@ cloud:
       path:
         location: user/
 server:
+  port: ${PORT:8080}
   tomcat:
     max-swallow-size: -1
     max-http-form-post-size: -1
@@ -103,7 +105,8 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-      dialect: org.hibernate.dialect.MySQLDialect
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
       use_sql_comments: true
       default_batch_fetch_size: 1000
 

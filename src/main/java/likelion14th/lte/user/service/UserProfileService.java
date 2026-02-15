@@ -39,7 +39,7 @@ public class UserProfileService {
                 s3Utils.deleteFile(user.getS3ImageKey());
             }
 
-            S3Dto result=s3Utils.uploadBytes(resized.bytes(),file.getOriginalFilename(), resized.contentType());
+            S3Dto result=s3Utils.uploadBytes(resized.bytes(),file.getOriginalFilename().split(".",2)[0]+".png", resized.contentType());
             user.setProfileImage(result.getUrl());
             user.setS3ImageKey(result.getKey());
 

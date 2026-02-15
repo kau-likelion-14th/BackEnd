@@ -1,6 +1,7 @@
 package likelion14th.lte.utils.Image;
 
 import likelion14th.lte.utils.exception.UtilException;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.apache.tika.Tika;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import static likelion14th.lte.utils.exception.UtilException.Reason.*;
 
+@Slf4j
 @Component
 public class ImageUtil {
 
@@ -48,6 +50,7 @@ public class ImageUtil {
         } catch (UtilException e) {
             throw e; // 그대로 전파
         } catch (Exception e) {
+            log.info(e.getMessage());
             throw new UtilException(IMAGE_PROCESS_FAILED, e);
         }
     }
@@ -64,7 +67,7 @@ public class ImageUtil {
             }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            boolean ok = ImageIO.write(output, "webp", baos);
+            boolean ok = ImageIO.write(output, "png", baos);
 
             if (!ok) {
                 throw new UtilException(IMAGE_PROCESS_FAILED);
@@ -72,13 +75,14 @@ public class ImageUtil {
 
             return new ResizedImage(
                     baos.toByteArray(),
-                    "image/webp",
-                    "webp"
+                    "image/png",
+                    "png"
             );
 
         } catch (UtilException e) {
             throw e;
         } catch (Exception e) {
+            log.info(e.getMessage());
             throw new UtilException(IMAGE_PROCESS_FAILED, e);
         }
     }
