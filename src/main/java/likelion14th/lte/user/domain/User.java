@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import likelion14th.lte.Entity.BaseEntity;
 import likelion14th.lte.follow.domain.Follow;
 import lombok.*;
+import likelion14th.lte.statistic.domain.Statistic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,11 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings =new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "statistic_id")
+    private Statistic statistic;
+
+
 
     @Builder
     public User (String providerId,  String username, String introduction,
@@ -55,5 +61,6 @@ public class User extends BaseEntity {
         this.s3ImageKey = s3ImageKey;
         this.followers=new ArrayList<>();
         this.followings=new ArrayList<>();
+        this.statistic = Statistic.create();
     }
 }
