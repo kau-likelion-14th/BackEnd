@@ -1,6 +1,7 @@
 package likelion14th.lte.login.service;
 
 import io.jsonwebtoken.Claims;
+import likelion14th.lte.youtube.repository.SavedSongRepository;
 import tools.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import likelion14th.lte.global.api.ErrorCode;
@@ -26,6 +27,7 @@ public class AuthService {
     private final KakaoClient kakaoClient;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final SavedSongRepository savedSongRepository;
     private final JwtProvider jwtProvider;
 
     public AuthResponse handleKakaoCode(String code) {
@@ -146,6 +148,8 @@ public class AuthService {
         User user = validateUser(request);
 
         refreshTokenRepository.deleteByUser(user);
+
+        savedSongRepository.deleteByUser(user);
 
         userRepository.delete(user);
     }
