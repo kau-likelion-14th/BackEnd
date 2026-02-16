@@ -1,9 +1,10 @@
 
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:file:.env[.properties] #.env파일을 optional로 읽어와서 yml에 주입하는 명령어
   profiles:
-    active: local
+    active: local #빌드된 jar실행시 local로 (on-profile:local 이런것들 작동시키기위해) #배포시 에는 .ebextention_dev/00-makeFiles.config에서 develop으로 실행하게 덮어씌움
+                  #이로 인해 eb에서 .ebextention makefile에서 실행 설정값인 develop으로 실행 아무런설정없으면 (로컬환경) 실행이 local로 되는 효과
 
   security:
     oauth2:
@@ -24,10 +25,11 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-  servlet:
+  servlet: #로컬 8080 톰캣서버 설정 (내부 80포트로 들어오는건 nginx가 설정, 외부애서 접근하는 80포트는 로드벨런서가)
+          #외부 도메인 80포트 접근-> 로드벨런서가 내부 80포트로 토스-> nginx가 내부 80800포트로 토스
     multipart:
       enabled: true
-      max-file-size: 50MB
+      max-file-size: 50MB   #내부 8080포트 톰캣서버 멀티 파트 파일 50메가 제한
       max-request-size: 50MB
 
 #JWT
@@ -46,12 +48,12 @@ cloud:
     s3:
       bucket: ${AWS_BUCKET}
       path:
-        location: user/
+        location: user/ #S3 저장될 디렉토리 세팅
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8080} #톰캣서버 포트 8080으로 오픈
   tomcat:
-    max-swallow-size: -1
-    max-http-form-post-size: -1
+    max-swallow-size: -1 #요청 사이즈 제한 없음
+    max-http-form-post-size: -1 #http 요청 사이즈 제한 없음
 
 #Swagger
 springdoc:

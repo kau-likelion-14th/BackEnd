@@ -77,6 +77,7 @@ public class FollowController {
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_SEARCH_SUCCESS, response);
     }
 
+    // todo 이거 날려도 괜찮을 듯?
     @GetMapping
     @Operation(summary = "팔로우 가능한 유저를 조회합니다.", description = "팔로우 가능한 유저를 페이징하며 조회합니다. " +
             "쿼리 파라미터로 page, size, sort를 전달할 수 있습니다. " +
