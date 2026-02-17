@@ -36,6 +36,11 @@ jwt:
   access-exp-ms: ${JWT_EXPIRATION:3600000}
   refresh-exp-ms: ${JWT_REFRESH_EXPIRATION:1209600000}
 
+#youtube
+youtube:
+  api-key: ${YOUTUBE_API_KEY}
+  api-base: https://www.googleapis.com/youtube/v3
+
 #s3
 cloud:
   aws:

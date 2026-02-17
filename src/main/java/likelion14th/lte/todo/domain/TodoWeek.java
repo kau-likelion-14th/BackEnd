@@ -1,6 +1,7 @@
 package likelion14th.lte.todo.domain;
 
 import jakarta.persistence.*;
+import likelion14th.lte.Entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TodoWeek {
+public class TodoWeek extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

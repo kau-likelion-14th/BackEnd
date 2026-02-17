@@ -1,6 +1,7 @@
 package likelion14th.lte.todo.domain;
 
 import jakarta.persistence.*;
+import likelion14th.lte.Entity.BaseEntity;
 import likelion14th.lte.category.domain.Category;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Todo {
+public class Todo extends BaseEntity {
 
     /** 필드 **/
     @Id
