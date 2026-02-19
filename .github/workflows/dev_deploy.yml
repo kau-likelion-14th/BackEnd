@@ -1,43 +1,54 @@
 name: LTE Dev CI/CD
 
+#언제 해당 코드가 시작되는지
 on:
+  #풀리퀘스트가 닫혔을떄 켜지도록 세팅
   pull_request:
     types:
       - closed
+  #깃허브 ui에서 수동실행 가능
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request' &&
+
+    runs-on: ubuntu-latest  # 깃허브 서버에서 우분투 최신버전으로 해당 조건이 참이라면 코드 시작
+    if: (github.event_name == 'pull_request' && 
       github.event.pull_request.merged == true &&
       github.event.pull_request.base.ref == 'main')
       || github.event_name == 'workflow_dispatch'
     # develop branch로 pr 요청되고 merge가 되면 작동
+    # (이벤트가 풀리퀘스트가 그리고 풀리퀘스트가 머지가 되었다면 그리고 풀리퀘가 메인으로 되었다면) 또는 깃허브 버튼으로 수동으로 눌렀다면
 
     steps:
+      #현재 코드 깃허브 서버로 체크아웃
       - name: Checkout
         uses: actions/checkout@v4
 
+      #깃허브 시크릿에 LTE_ENV의 내용물을 읽어서  root유저만 읽고쓰기 (퍼미션 600)권한으로 최상위 디렉토리에 .env파일 생성
       - name: Create .env file from secret
         run: |
           printf '%s' "${{ secrets.LTE_ENV }}" > .env
           chmod 600 .env
 
+      #깃허브 서버에 JDK21를 이클립스의 Temurin으로 설치
       - name: Set up JDK 21
         uses: actions/setup-java@v4.0.0
         with:
           java-version: '21'
           distribution: 'temurin'
 
+      #gradlew 실행 (x: 엑세스)권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         shell: bash
 
+    # test제외하고 자바 코드를 클린 빌드
       - name: Build with Gradle
         run: ./gradlew clean build -x test
         shell: bash
 
+    # 현재 시간 다음과 같은 포맷으로 한국 시간 get
       - name: Get current time
         uses: josStorer/get-current-time@v2
         id: current-time
@@ -45,10 +56,12 @@ jobs:
           format: 'YYYY-MM-DDTHH:mm:ss'
           utcOffset: '+09:00'
 
+    #현재 시간을 깃허브 로그에 띄워줌
       - name: Show current time
         run: echo "${{ steps.current-time.outputs.formattedTime }}"
         shell: bash
 
+    #deploy폴더 생성 및 배포 zip생성
       - name: Generate deployment package
         run: |
           mkdir -p deploy
@@ -58,7 +71,17 @@ jobs:
           cp -r .ebextensions_dev deploy/.ebextensions
           cp -r .platform deploy/.platform
           cd deploy && zip -r deploy.zip .
+    # 위 리눅스 코드 해설 (하단에서 설명하는 복사나 이동은 전부 deploy)
+      # 1, deploy 폴더 생성
+      # 2. 위에서 빌드한 jar파일을 이름을 수정하고 복사
+      # 3. Procifile 복사
+      # 4. .env파일 복사
+      # 5. 우리가 만든 .ebextention_dev 디렉토리를 재귀적으로(내용물 전부)(-r => recursive) 복사
+      # 6. .platform도 동일하게 복사
+      # 7. deploy폴더를 재귀적으로 압축 생성
 
+
+      #
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -66,7 +89,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
           application_name: 'lte-dev'         # EB 애플리케이션 이름
           environment_name: 'lte-dev-env'    # EB 환경 이름
-          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
+          version_label: github-action-${{ steps.current-time.outputs.formattedTime }} #배포 버전 라벨
           region: 'ap-northeast-2'
-          deployment_package: 'deploy/deploy.zip'
-          wait_for_deployment: false
+          deployment_package: 'deploy/deploy.zip' # 깃허브 배포 액션 서버내의 (우리가 위에서 압축 했던거) deploy 압축 파일 경로(eb에 어떤 파일을 업로드 할 것인지)
+          wait_for_deployment: false #eb에서 배포 성공 문구가 뜰떄 까지 대기하지 않음
