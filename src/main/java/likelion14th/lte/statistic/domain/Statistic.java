@@ -12,19 +12,19 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "statistic")
 public class Statistic extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "statistic_id")
-    @Getter(AccessLevel.PRIVATE)
     private Long id;
 
     @Column(nullable = false)
-    private int streak=0;
+    private int streak;
 
+    @Setter
     @Column(nullable = false)
     private int monthPercent=0;
 
@@ -38,11 +38,14 @@ public class Statistic extends BaseEntity {
     @OneToOne(mappedBy = "statistic")
     private User user;
 
+
     public static Statistic create() {
         Statistic statistic = new Statistic();
         statistic.initializeWeeks();
         return statistic;
     }
+
+
     private void initializeWeeks() {
         for (WeekEnum week : WeekEnum.values()) {
             StatWeek statWeek = StatWeek.builder()
@@ -58,6 +61,13 @@ public class Statistic extends BaseEntity {
                 .max(Comparator.comparingInt(StatWeek::getCount))
                 .map(StatWeek::getWeek)
                 .orElse(null);
+    }
+    public void increaseStreakIfSuccess(boolean isSuccess) {
+        if(isSuccess) {
+            this.streak++;
+        } else{
+            this.streak = 0;
+        }
     }
 
 }

@@ -33,16 +33,20 @@ public class UserProfileService {
             imageUtil.validateImage(file);
             //이미지 변환
             ImageUtil.ResizedImage resized =
-                    imageUtil.resizeProfileToWebpBytes(file, 256);
+                    imageUtil.resizeProfileToPngBytes(file, 256);
+            String originalName = file.getOriginalFilename();
+            String baseName = originalName.contains(".")
+                    ? originalName.substring(0, originalName.lastIndexOf("."))
+                    : originalName;
+
+            S3Dto result=s3Utils.uploadBytes(resized.bytes(), baseName+".png", resized.contentType());
             //유저 이미지 이미 존재한다면 삭제;
             if(user.getS3ImageKey()!=null){
                 s3Utils.deleteFile(user.getS3ImageKey());
             }
 
-            S3Dto result=s3Utils.uploadBytes(resized.bytes(),file.getOriginalFilename().split(".",2)[0]+".png", resized.contentType());
-            user.setProfileImage(result.getUrl());
-            user.setS3ImageKey(result.getKey());
 
+            user.fixUserProfile(result.getUrl(),result.getKey());
             return UserProfileResponse.from(user);
 
         } catch (UtilException e) {
@@ -59,8 +63,7 @@ public class UserProfileService {
             s3Utils.deleteFile(user.getS3ImageKey());
         }
 
-        user.setProfileImage(null);
-        user.setS3ImageKey(null);
+        user.fixUserProfile(null,null);
         return UserProfileResponse.from(user);
 
     }

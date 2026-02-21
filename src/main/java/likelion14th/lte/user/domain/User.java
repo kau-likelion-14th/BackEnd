@@ -11,13 +11,11 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -62,5 +60,10 @@ public class User extends BaseEntity {
         this.followers=new ArrayList<>();
         this.followings=new ArrayList<>();
         this.statistic = Statistic.create();
+    }
+
+    public void fixUserProfile(String s3ImageUrl, String s3ImageKey) {
+        this.profileImage = s3ImageUrl;
+        this.s3ImageKey = s3ImageKey;
     }
 }
