@@ -6,14 +6,14 @@ import likelion14th.lte.user.domain.User;
 import lombok.*;
 
 /**
- *  팔로우 관계를 나타내는 JPA 엔티티.
- * "fromUser가 toUser를 팔로우한다"는 관계를 DB에 저장합니다.
+ * 팔로우 관계를 DB에 저장할 때 사용하는 엔티티 클래스입니다.
+ * "fromUser가 toUser를 팔로우한다"는 관계 한 건을 테이블의 한 행으로 매핑합니다.
+ * 엔티티는 DB 테이블과 1:1로 대응되는 자바 클래스를 의미합니다.
  *
- * @Entity: JPA 엔티티로 인식, DB 테이블과 매핑.
- * @Getter: Lombok - 모든 필드에 대한 getter 자동 생성.
- * @AllArgsConstructor(access = PROTECTED): 모든 필드 생성자(protected). JPA 프록시 등에서 사용.
- * @NoArgsConstructor(access = PROTECTED): 인자 없는 생성자(protected). JPA 스펙 요구.
- * @Table(name="follow"): 매핑할 테이블 이름. 생략 시 클래스명(Follow)을 snake_case로 사용.
+ * @Entity : 이 클래스를 JPA 엔티티로 인식하며, DB 테이블과 매핑합니다.
+ * @Getter : 각 필드에 대한 getter 메서드를 자동 생성합니다.
+ * @AllArgsConstructor / @NoArgsConstructor : JPA가 엔티티를 생성·로딩할 때 사용하는 생성자입니다.
+ * @Table(name="follow") : 매핑할 DB 테이블 이름을 "follow"로 지정합니다.
  */
 @Entity
 @Getter
@@ -21,22 +21,24 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="follow")
 public class Follow extends BaseEntity {
-    /**  @Id: JPA에서 이 필드를 테이블의 기본키(PK)로 사용함 */
-    @Id //  @GeneratedValue(strategy = IDENTITY): DB가 insert 시 자동으로 값을 생성(MySQL AUTO_INCREMENT 등)
+    /** @Id : 이 필드를 테이블의 기본키(Primary Key)로 사용합니다. */
+    @Id
+    /** @GeneratedValue : insert 시 DB가 id 값을 자동으로 생성합니다(예: AUTO_INCREMENT). */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**  @ManyToOne: N:1 관계. 여러 Follow 레코드가 하나의 User를 참조할 수 있음 (팔로우를 건 유저) */
+    /** fromUser : 팔로우를 수행한 주체(누가 팔로우했는지)입니다. */
     @ManyToOne
     private User fromUser;
 
-    /**  @ManyToOne: 팔로우 대상 유저. 여러 Follow 레코드가 하나의 User를 참조 가능 */
+    /** toUser : 팔로우 대상(누구를 팔로우했는지)입니다. */
     @ManyToOne
     private User toUser;
 
-    /**  @Builder: 빌더 패턴으로 객체 생성 가능. Follow.builder().fromUser(...).toUser(...).build() */
+    /** @Builder : 빌더 패턴으로 객체를 생성할 수 있게 합니다. Follow.builder().fromUser(...).toUser(...).build() 형태로 사용합니다. */
     @Builder
     public Follow( User fromUser, User toUser) {
+        // 전달받은 fromUser, toUser를 이 엔티티의 필드에 저장합니다. (팔로우 관계 한 건을 나타내는 데이터가 됩니다)
         this.fromUser = fromUser;
         this.toUser = toUser;
     }
