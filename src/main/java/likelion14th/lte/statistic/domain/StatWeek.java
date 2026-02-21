@@ -9,6 +9,7 @@ import likelion14th.lte.todo.domain.WeekEnum;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StatWeek {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

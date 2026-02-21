@@ -75,14 +75,14 @@ public class StatisticService {
 
 
         if(existsUsersSuccessTodo && !existsUsersFailureTodo) {
-            statistic.setStreak(statistic.getStreak() + 1);
+            statistic.increaseStreakIfSuccess(true);
             statistic.getStatWeeks().stream()
                     .filter(w->w.getWeek().toDayOfWeek()==day.getDayOfWeek())
                     .findFirst()
                     .orElseThrow(()->new GeneralException(ErrorCode.TODO_ROUTINE_DAY_OF_WEEK_INVALID))
                     .increase();
         } else {
-            statistic.setStreak(0);
+            statistic.increaseStreakIfSuccess(false);
         }
 
 
