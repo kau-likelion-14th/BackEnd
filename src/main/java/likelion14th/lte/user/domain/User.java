@@ -24,6 +24,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String username;
 
+    @Setter
     @Column(columnDefinition = "TEXT")
     private String introduction;
 
@@ -66,4 +67,8 @@ public class User extends BaseEntity {
         this.profileImage = s3ImageUrl;
         this.s3ImageKey = s3ImageKey;
     }
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
 }
