@@ -24,7 +24,7 @@ public class AuthController {
             @RequestBody KakaoCodeRequest request) {
 
         // 카카오 로그인: code로 카카오 토큰 발급 -> 유저 조회/저장 -> 우리 JWT 발급
-        AuthResponse response = authService.handleKakaoCode(request.getCode());
+        AuthResponse response = authService.handleKakaoCode(request.getCode(),request.getIsDevelop());
 
         return ApiResponse.onSuccess(SuccessCode.USER_LOGIN_SUCCESS, response);
     }
