@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KakaoCodeRequest {
     private String code;
+    private Boolean isDevelop;
 }
