@@ -29,14 +29,14 @@ public class KakaoClient {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
 
-    public String getAccessToken(String code) {
+    public String getAccessToken(String code, Boolean develop) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", redirectUri);
+        body.add("redirect_uri", develop ? redirectUri : "http://localhost:3000/login/oauth2/code/kakao");
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> request =

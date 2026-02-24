@@ -30,10 +30,10 @@ public class AuthService {
     private final SavedSongRepository savedSongRepository;
     private final JwtProvider jwtProvider;
 
-    public AuthResponse handleKakaoCode(String code) {
+    public AuthResponse handleKakaoCode(String code,Boolean isDevelop) {
 
         // code -> 카카오 access_token
-        String kakaoAccessToken = kakaoClient.getAccessToken(code);
+        String kakaoAccessToken = kakaoClient.getAccessToken(code,isDevelop);
 
         // access token -> kakao user info
         JsonNode kakaoUserInfo = kakaoClient.getUserInfo(kakaoAccessToken);
