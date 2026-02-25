@@ -50,13 +50,13 @@ public class TodoService {
     }
     // 투두 소유자 검증
     private void assertOwner(User user, Todo todo) {
-        if (!todo.getCategory().getUser().getId().equals(user.getId())) {
+        if (!todo.getUser().getId().equals(user.getId())) {
             throw new GeneralException(ErrorCode.TODO_ACCESS_DENIED);
         }
     }
     // 카테고리 검증
-    private Category getCategoryOrThrow(Long userId, String categoryName) {
-        return categoryRepository.findByUser_IdAndCategoryName(userId, categoryName)
+    private Category getCategoryOrThrow(String categoryName) {
+        return categoryRepository.findByCategoryName(categoryName)
                 .orElseThrow(() -> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
     }
     // 루틴 투두 검증
@@ -139,7 +139,7 @@ public class TodoService {
         }
 
         // 카테고리  검증
-        Category category = getCategoryOrThrow(user.getId(), request.getCategoryName());
+        Category category = getCategoryOrThrow(request.getCategoryName());
 
         // 루틴 요청 값 파싱/검증
         boolean routineEnabled = request.isRoutineEnabled();
@@ -195,7 +195,7 @@ public class TodoService {
             LocalDate date
     ) {
         User user = getUserOrThrow(userId);
-        Category category = getCategoryOrThrow(user.getId(), request.getCategoryName());
+        Category category = getCategoryOrThrow(request.getCategoryName());
 
         boolean routineEnabled = request.isRoutineEnabled();
 
@@ -214,6 +214,7 @@ public class TodoService {
 
         // 투두 저장
         Todo todo = Todo.create(
+                user,
                 request.getDescription(),
                 category,
                 routineEnabled,
@@ -248,15 +249,18 @@ public class TodoService {
         Todo todo = getTodoOrThrow(todoId);
         assertOwner(user, todo);
 
-        // '그 날짜'의 투두 date 삭제
+        // todoDate 찾고
         TodoDate todoDate = todoDateRepository.findByTodo_IdAndDate(todoId, date)
                 .orElseThrow(() -> new GeneralException(ErrorCode.TODO_DATE_NOT_FOUND));
-        todoDateRepository.delete(todoDate);
 
-        // 루틴 없는 투두 && todoDate 에 0개 -> 투두테이블에서 하드딜리트
-        if (!todo.isRoutineEnabled() && !todoDateRepository.existsByTodo_Id(todoId)) {
-                 todoRepository.delete(todo);
+        // 일반 투두: 투두 자체 삭제 -> TodoDate 도 같이 정리됨
+        if (!todo.isRoutineEnabled()) {
+            todoRepository.delete(todo);
+            return;
         }
+
+        // 루틴 투두 : 그 날짜만 삭제
+        todoDateRepository.delete(todoDate);
     }
 
     /** 완료 처리 **/
