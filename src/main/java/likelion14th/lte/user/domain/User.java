@@ -3,6 +3,7 @@ package likelion14th.lte.user.domain;
 import jakarta.persistence.*;
 import likelion14th.lte.Entity.BaseEntity;
 import likelion14th.lte.follow.domain.Follow;
+import likelion14th.lte.todo.domain.Todo;
 import lombok.*;
 import likelion14th.lte.statistic.domain.Statistic;
 
@@ -47,7 +48,8 @@ public class User extends BaseEntity {
     @JoinColumn(name = "statistic_id")
     private Statistic statistic;
 
-
+    @OneToMany(mappedBy="user", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Todo> todos;
 
     @Builder
     public User (String providerId,  String username, String introduction,
