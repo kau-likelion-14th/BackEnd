@@ -22,10 +22,8 @@ public class CategoryController {
     /** 카테고리 조회 * 로그인한 사용자의 카테고리 목록 조회 **/
     @GetMapping
     @Operation(summary = "카테고리 목록 조회", description = "todo 추가 시에 보여줄, 로그인한 사용자의 카테고리 목록을 조회합니다.")
-    public ApiResponse<List<CategoryResponse>> getAllCategories(
-            @AuthenticationPrincipal Long userId
-    ){
-        List<CategoryResponse> categories = categoryService.getAllCategories(userId);
+    public ApiResponse<List<CategoryResponse>> getAllCategories (){
+        List<CategoryResponse> categories = categoryService.getAllCategories();
         return ApiResponse.onSuccess(SuccessCode.CATEGORY_LIST_GET_SUCCESS, categories);
     }
 }

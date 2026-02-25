@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findAllByUserId(Long userId);
+    List<Category> findAllByOrderByCategoryNameAsc();
 
-    Optional<Category> findByUser_IdAndCategoryName(Long userId, String categoryName);
+    Optional<Category> findByCategoryName(String categoryName);
 }

@@ -22,13 +22,9 @@ public class CategoryService {
 
     /** 카테고리 목록 조회 **/
     @Transactional
-    public List<CategoryResponse> getAllCategories(Long userId){
-        // 사용자 조회(검증)
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new GeneralException(ErrorCode.USER_NOT_FOUND));
-
+    public List<CategoryResponse> getAllCategories(){
         // 카테고리 목록 조회
-        List<Category> categories = categoryRepository.findAllByUserId(user.getId());
+        List<Category> categories = categoryRepository.findAllByOrderByCategoryNameAsc();
 
         // Dto 로 변환 후 반환
         return categories.stream()
