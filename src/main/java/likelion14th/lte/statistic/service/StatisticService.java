@@ -65,11 +65,11 @@ public class StatisticService {
         Statistic statistic = user.getStatistic();
 
         boolean existsUsersSuccessTodo =
-                todoDateRepository.existsByTodo_Category_User_IdAndDateAndCompleted(
+                todoDateRepository.existsByTodo_User_IdAndDateAndCompleted(
                     user.getId(),day,true
                 );
         boolean existsUsersFailureTodo  =
-                todoDateRepository.existsByTodo_Category_User_IdAndDateAndCompleted(
+                todoDateRepository.existsByTodo_User_IdAndDateAndCompleted(
                         user.getId(),day,false
                 );
 
@@ -86,10 +86,10 @@ public class StatisticService {
         }
 
 
-        int completedTodo30DayCnt= todoDateRepository.countByTodo_Category_User_IdAndDateBetweenAndCompleted(
+        int completedTodo30DayCnt= todoDateRepository.countByTodo_User_IdAndDateBetweenAndCompleted(
                 user.getId(), before30Days, day, true
         );
-        int failureTodo30DayCnt = todoDateRepository.countByTodo_Category_User_IdAndDateBetweenAndCompleted(
+        int failureTodo30DayCnt = todoDateRepository.countByTodo_User_IdAndDateBetweenAndCompleted(
                 user.getId(),before30Days,day,false
         );
 

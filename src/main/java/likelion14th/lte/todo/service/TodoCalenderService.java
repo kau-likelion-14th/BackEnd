@@ -35,7 +35,7 @@ public class TodoCalenderService {
 
         // 해당 월의 미완료 TodoDate 조회
         List<TodoDate> uncompleted = todoDateRepository
-                .findAllByTodo_Category_User_IdAndDateBetweenAndCompletedFalse(userId, start, end);
+                .findAllByTodo_User_IdAndDateBetweenAndCompletedFalse(userId, start, end);
 
         // date 기준으로 count
         Map<LocalDate, Long> counted = uncompleted.stream()

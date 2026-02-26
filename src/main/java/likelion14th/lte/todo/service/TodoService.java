@@ -94,7 +94,7 @@ public class TodoService {
         // 사용자 검증
         User user = getUserOrThrow(userId);
         // 유저 + 날짜 기준 TodoDate 조회
-        List<TodoDate> todoDates =  todoDateRepository.findAllByTodo_Category_User_IdAndDate(user.getId(), date);
+        List<TodoDate> todoDates =  todoDateRepository.findAllByTodo_User_IdAndDate(user.getId(), date);
         // Dto 변환
         return todoDates.stream()
                 .map(td -> TodoListResponse.from(td.getTodo(), td.isCompleted()))
