@@ -58,6 +58,10 @@ jobs:
           cp -r .ebextensions_dev deploy/.ebextensions
           cp -r .platform deploy/.platform
           cd deploy && zip -r deploy.zip .
+      - name: Verify deploy zip content
+        run: |
+          unzip -l deploy/deploy.zip | head -n 50
+          unzip -l deploy/deploy.zip | egrep -i "pom.xml|Buildfile|src/|repository/" && exit 1 || echo "OK: no sample source"
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
