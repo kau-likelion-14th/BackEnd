@@ -26,6 +26,11 @@ public enum ErrorCode implements BaseCode { // 실패
     KAKAO_AUTH_FAILED(HttpStatus.UNAUTHORIZED, "KAKAO_4011", "카카오 인증에 실패했습니다."),
     KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO_5021", "카카오 서버 응답에 실패했습니다."),
 
+    // YouTube
+    YOUTUBE_API_FAILED(HttpStatus.BAD_GATEWAY, "YOUTUBE_API_FAILED", "YouTube API 호출에 실패했습니다."),
+    SONG_ALREADY_SAVED(HttpStatus.CONFLICT, "SONG_ALREADY_SAVED", "이미 저장된 곡입니다."),
+    SONG_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO_4041", "해당 노래를 찾을 수 없습니다."),
+
     // Image Upload
     IMAGE_FILE_EMPTY(HttpStatus.BAD_REQUEST, "IMG_4001", "업로드된 파일이 비어 있습니다."),
     IMAGE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "IMG_4151", "허용되지 않은 이미지 형식입니다."),

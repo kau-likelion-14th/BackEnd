@@ -3,20 +3,20 @@ package likelion14th.lte.user.domain;
 import jakarta.persistence.*;
 import likelion14th.lte.Entity.BaseEntity;
 import likelion14th.lte.follow.domain.Follow;
+import likelion14th.lte.todo.domain.Todo;
 import lombok.*;
+import likelion14th.lte.statistic.domain.Statistic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -25,6 +25,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String username;
 
+    @Setter
     @Column(columnDefinition = "TEXT")
     private String introduction;
 
@@ -43,6 +44,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings =new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "statistic_id")
+    private Statistic statistic;
+
+    @OneToMany(mappedBy="user", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Todo> todos;
 
     @Builder
     public User (String providerId,  String username, String introduction,
@@ -55,5 +62,15 @@ public class User extends BaseEntity {
         this.s3ImageKey = s3ImageKey;
         this.followers=new ArrayList<>();
         this.followings=new ArrayList<>();
+        this.statistic = Statistic.create();
     }
+
+    public void fixUserProfile(String s3ImageUrl, String s3ImageKey) {
+        this.profileImage = s3ImageUrl;
+        this.s3ImageKey = s3ImageKey;
+    }
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
 }

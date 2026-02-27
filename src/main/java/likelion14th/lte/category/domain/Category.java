@@ -23,10 +23,6 @@ public class Category extends BaseEntity {
     private String categoryName = "공부";
 
     /** 연관관계 **/
-    // 사용자 일대다 카테고리
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     /** 양방향 메서드 **/
 

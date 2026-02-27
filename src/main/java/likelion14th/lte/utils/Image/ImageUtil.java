@@ -55,7 +55,7 @@ public class ImageUtil {
         }
     }
 
-    public ResizedImage resizeProfileToWebpBytes(MultipartFile file, int size) {
+    public ResizedImage resizeProfileToPngBytes(MultipartFile file, int size) {
 
         try {
             BufferedImage output;

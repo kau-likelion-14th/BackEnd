@@ -1,6 +1,7 @@
 package likelion14th.lte.todo.domain;
 
 import jakarta.persistence.*;
+import likelion14th.lte.Entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(// 중복 불가 제약 조건
         uniqueConstraints = {@UniqueConstraint(name = "uk_todo_date", columnNames = {"todo_id", "date"})})
-public class TodoDate{
+public class TodoDate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
