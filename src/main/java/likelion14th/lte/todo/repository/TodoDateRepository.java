@@ -18,7 +18,10 @@ public interface TodoDateRepository extends JpaRepository<TodoDate, Long> {
     boolean existsByTodo_Id(Long todoId);
     // 과거는 남기고 미래만 삭제
     void deleteAllByTodo_IdAndDateGreaterThanEqual(Long todoId, LocalDate from);
-    // userId + 날짜 범위 + 미완료(completed = false) TodoDate 전부 조회
-    List<TodoDate> findAllByTodo_Category_User_IdAndDateBetweenAndCompletedFalse( Long userId, LocalDate start, LocalDate end);
+
+    // 월의 TodoDate 전부 가죠오기
+    List<TodoDate> findAllByTodo_Category_User_IdAndDateBetween(
+            Long userId, LocalDate start, LocalDate end
+    );
 }
 
