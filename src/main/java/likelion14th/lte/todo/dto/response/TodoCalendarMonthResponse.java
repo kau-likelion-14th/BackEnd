@@ -4,18 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
 public class TodoCalendarMonthResponse {
-    private List<DayInfo> days;
-
-    @Getter
-    @AllArgsConstructor
-    public static class DayInfo {
-        private LocalDate date;
-        private long remaining;
-        private boolean hasTodo;
-    }
+    // key: yyyy-MM-dd, value: 남은 투두 개수
+    private Map<LocalDate, Long> remainingCountByDate;
 }
