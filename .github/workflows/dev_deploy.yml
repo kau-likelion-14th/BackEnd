@@ -42,7 +42,7 @@ jobs:
         uses: josStorer/get-current-time@v2
         id: current-time
         with:
-          format: 'YYYY-MM-DDTHH:mm:ss'
+          format: 'YYYYMMDD-HHmmss'
           utcOffset: '+09:00'
 
       - name: Show current time
@@ -69,4 +69,4 @@ jobs:
           version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
           region: 'ap-northeast-2'
           deployment_package: 'deploy/deploy.zip'
-          wait_for_deployment: false
+          wait_for_deployment: true
