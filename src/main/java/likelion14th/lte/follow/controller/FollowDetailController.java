@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/follow/{followId}")
 @Tag(name = "친구 페이지 관리", description = "친구 페이지 조회 api")
 @RequiredArgsConstructor
-public class FriendDetailController {
+public class FollowDetailController {
     private final UserIntroService userIntroService;
     private final TodoCalendarService todoCalendarService;
     private final TodoService todoService;
