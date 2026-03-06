@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class TodoCalendarService {
+public class TodoCalenderService {
 
     private final UserRepository userRepository;
     private final TodoDateRepository todoDateRepository;

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import likelion14th.lte.global.api.ApiResponse;
 import likelion14th.lte.global.api.SuccessCode;
 import likelion14th.lte.todo.dto.response.TodoCalendarMonthResponse;
-import likelion14th.lte.todo.service.TodoCalendarService;
+import likelion14th.lte.todo.service.TodoCalenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TodoCalendarController {
 
-    private final TodoCalendarService todoCalendarService;
+    private final TodoCalenderService todoCalendarService;
 
     /** 월별 캘린더 집계 **/
     @GetMapping("/calendar")
