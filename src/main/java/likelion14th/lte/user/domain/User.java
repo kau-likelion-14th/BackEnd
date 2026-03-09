@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import likelion14th.lte.Entity.BaseEntity;
 import likelion14th.lte.follow.domain.Follow;
 import likelion14th.lte.todo.domain.Todo;
+import likelion14th.lte.youtube.domain.SavedSong;
 import lombok.*;
 import likelion14th.lte.statistic.domain.Statistic;
 
@@ -51,6 +52,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy="user", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Todo> todos;
 
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<SavedSong> savedSongs = new ArrayList<>();
+
+
     @Builder
     public User (String providerId,  String username, String introduction,
                  String profileImage, String userTag, String s3ImageKey) {
@@ -62,6 +67,7 @@ public class User extends BaseEntity {
         this.s3ImageKey = s3ImageKey;
         this.followers=new ArrayList<>();
         this.followings=new ArrayList<>();
+        this.savedSongs=new ArrayList<>();
         this.statistic = Statistic.create();
     }
 
