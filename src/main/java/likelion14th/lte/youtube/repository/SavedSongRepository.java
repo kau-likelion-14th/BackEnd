@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface SavedSongRepository extends JpaRepository<SavedSong, String> {
-    Optional<SavedSong> findByUserAndSongId(User user, String songId);
-    Optional<SavedSong> findAllByUserOrderBySavedAtDesc(User user);
+    Optional<SavedSong> findFirstByUser(User user);
 
     void deleteByUser(User user);
 }

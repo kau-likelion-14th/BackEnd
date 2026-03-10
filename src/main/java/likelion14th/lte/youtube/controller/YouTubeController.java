@@ -45,8 +45,8 @@ public class YouTubeController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "내 저장 곡 목록 조회",
-            description = "로그인한 사용자의 저장 곡 목록을 savedAt 기준 내림차순으로 조회합니다. (로그인 필요)")
+    @Operation(summary = "내 저장 곡 조회",
+            description = "로그인한 사용자의 저장 곡을 조회합니다. (로그인 필요)")
 
     // 내 저장 목록
     public ApiResponse<List<SavedSongResponse>> myList(HttpServletRequest request) {
