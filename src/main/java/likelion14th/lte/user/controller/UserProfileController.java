@@ -53,12 +53,22 @@ public class UserProfileController {
         UserProfileResponse response = userIntroService.updateUserIntroduce(userId, request);
         return ApiResponse.onSuccess(SuccessCode.USER_PROFILE_UPDATE_SUCCESS,response);
     }
+
     @GetMapping
     @Operation(summary = "유저 프로필을 조회합니다", description = "유저프로필 조회")
     public ApiResponse<UserProfileResponse> getUserProfile(
             @AuthenticationPrincipal Long userId
     ){
         UserProfileResponse response = userIntroService.getUserProfile(userId);
+        return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS,response);
+    }
+    @GetMapping("/touser")
+    @Operation(summary = " 프로필을 조회합니다", description = "유저프로필 조회")
+    public ApiResponse<UserProfileResponse> getFollowProfile(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam Long toUserId
+    ){
+        UserProfileResponse response = userIntroService.getUserProfile(toUserId);
         return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS,response);
     }
 
