@@ -64,9 +64,6 @@ public class YouTubeService {
 
         User user = authService.validateUser(request);
 
-        savedSongRepository.findByUserAndSongId(user, songId)
-                .ifPresent(existing -> { throw new GeneralException(ErrorCode.SONG_ALREADY_SAVED); });
-
         // 단건 조회로 정확한 snippet 가져오기
         JsonNode root = youTubeClient.getVideoRaw(songId);
         JsonNode first = root.path("items").isArray() && root.path("items").size() > 0
@@ -88,6 +85,9 @@ public class YouTubeService {
             imageUrl = snippet.path("thumbnails").path("default").path("url").asText(null);
         }
 
+        savedSongRepository.findFirstByUser(user)
+                .ifPresent(savedSongRepository::delete);
+
         // durationMs/previewUrl은 유튜브에서 바로 안 나오니 null 처리(혹은 contentDetails.duration 파싱 확장 가능)
         SavedSong savedSong = SavedSong.builder()
                 .user(user)
@@ -108,10 +108,9 @@ public class YouTubeService {
     public List<SavedSongResponse> mySavedSongs(HttpServletRequest request) {
         User user = authService.validateUser(request);
 
-        return savedSongRepository.findAllByUserOrderBySavedAtDesc(user)
-                .stream()
-                .map(SavedSongResponse::from)
-                .toList();
+        return savedSongRepository.findFirstByUser(user)
+                .map(savedSong -> List.of(SavedSongResponse.from(savedSong)))
+                .orElseGet(List::of);
     }
 
     public void deleteSavedSong(HttpServletRequest request, String songId) {
@@ -120,7 +119,7 @@ public class YouTubeService {
         User user = authService.validateUser(request);
 
         SavedSong song = savedSongRepository
-                .findByUserAndSongId(user, songId)
+                .findFirstByUser(user)
                 .orElseThrow(() -> new GeneralException(ErrorCode.SONG_NOT_FOUND));
 
         savedSongRepository.delete(song);
