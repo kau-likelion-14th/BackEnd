@@ -44,7 +44,7 @@ public class FollowController {
     @PostMapping
     @Operation(summary = "팔로우 추가", description = "유저 id를 통해 팔로우를 추가합니다")
     public ApiResponse<FollowUserResponse> addFollow(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestBody FollowUserRequest followUserRequest) {
        // 서비스에 "로그인한 유저 ID"와 "팔로우할 대상 ID"를 넘겨 팔로우를 추가하고, 추가된 대상 유저 정보를 응답 DTO로 받습니다.
        FollowUserResponse response = followService.followUser(userId, followUserRequest.getToUserId());
@@ -56,7 +56,7 @@ public class FollowController {
     @DeleteMapping
     @Operation(summary = "언팔로우", description = "유저 id를 통해 언팔로우를 진행합니다")
     public ApiResponse<Void> deleteFollow(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestBody FollowUserRequest followUserRequest){
         // 서비스에서 언팔로우 처리만 수행합니다. (반환 데이터 없음)
         followService.unfollowUser(userId, followUserRequest.getToUserId());
@@ -66,7 +66,7 @@ public class FollowController {
     /** GET /api/follow/followers : 나를 팔로우하는 사람 목록(팔로워)을 조회합니다. */
     @GetMapping("/followers")
     public ApiResponse<List<FollowUserResponse>> getFollows(
-            @AuthenticationPrincipal Long userId
+            @RequestParam Long userId
     ){
         // 서비스에서 "나를 팔로우하는 사람들" 목록을 조회한 뒤, 성공 응답으로 감싸서 반환합니다.
         List<FollowUserResponse> response = followService.getFollowers(userId);
@@ -76,7 +76,7 @@ public class FollowController {
     /** GET /api/follow/followings : 내가 팔로우하는 사람 목록(팔로잉)을 조회합니다. */
     @GetMapping ("/followings")
     public ApiResponse<List<FollowUserResponse>> getFollowings(
-            @AuthenticationPrincipal Long userId
+            @RequestParam Long userId
     ){
         // 서비스에서 "내가 팔로우하는 사람들" 목록을 조회한 뒤, 성공 응답으로 감싸서 반환합니다.
         List<FollowUserResponse> response = followService.getFollowings(userId);
@@ -93,7 +93,7 @@ public class FollowController {
             "sort 파라미터는 선택사항이며, 형식: sort=id,DESC 또는 sort=username,ASC (쉼표로 구분). " +
             "정렬 가능한 필드: id, username, userTag, createdAt, updatedAt")
     public ApiResponse<Page<FollowUserResponse>> getSearchFollows(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestParam String nickname,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable
             ){
@@ -112,7 +112,7 @@ public class FollowController {
             "sort 파라미터는 선택사항이며, 형식: sort=id,DESC 또는 sort=username,ASC (쉼표로 구분). " +
             "정렬 가능한 필드: id, username, userTag, createdAt, updatedAt")
     public ApiResponse<Page<FollowUserResponse>> getCanFollowUsers(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
         // 서비스에서 팔로우 가능한 유저 목록을 페이징 조회한 뒤, 성공 응답으로 반환합니다.

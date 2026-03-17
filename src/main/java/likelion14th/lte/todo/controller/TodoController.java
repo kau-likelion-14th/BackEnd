@@ -31,7 +31,7 @@ public class TodoController {
     @GetMapping
     @Operation(summary = "투두 리스트 조회", description = "선택한 날짜의 투두리스트를 조회합니다.")
     public ApiResponse<List<TodoListResponse>> getTodosByDate(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
         List<TodoListResponse> todos = todoService.getTodosByDate(userId, date);
@@ -42,7 +42,7 @@ public class TodoController {
     @GetMapping("/{todoId}")
     @Operation(summary = "투두 상세 조회", description = "투두의 상세 정보를 조회합니다.")
     public ApiResponse<TodoDetailResponse> getTodoDetail(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @PathVariable Long todoId
     ){
         TodoDetailResponse todo = todoService.getTodoDetail(userId, todoId);
@@ -53,7 +53,7 @@ public class TodoController {
     @PutMapping("/{todoId}")
     @Operation(summary = "투두 상세 수정", description = "투두의 상세 정보를 수정합니다.")
     public ApiResponse<TodoDetailResponse> updateTodoDetail(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @RequestBody @Valid TodoUpdateRequest todoUpdateRequest
     ){
@@ -69,7 +69,7 @@ public class TodoController {
     @PostMapping
     @Operation(summary = "투두 추가", description = "투두를 추가합니다.")
     public ApiResponse<TodoDetailResponse> createTodo(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestBody @Valid TodoCreateRequest todoCreateRequest,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
@@ -81,7 +81,7 @@ public class TodoController {
     @DeleteMapping("/{todoId}/dates/{date}")
     @Operation(summary = "투두 삭제", description = "투두를 삭제합니다.")
     public ApiResponse<String> deleteTodo(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
@@ -93,7 +93,7 @@ public class TodoController {
     @PatchMapping("/{todoId}/dates/{date}/complete")
     @Operation(summary = "투두 완료 토글", description = "선택한 날짜의 투두 완료/해제를 토글합니다.")
     public ApiResponse<TodoListResponse> updateTodoComplete(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestBody @Valid TodoCompleteUpdateRequest request

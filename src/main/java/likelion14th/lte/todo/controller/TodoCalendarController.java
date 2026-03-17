@@ -22,7 +22,7 @@ public class TodoCalendarController {
     @GetMapping("/calendar")
     @Operation(summary = "월별 캘린더 조회", description = "해당 월의 각 날짜별 남은 투두 개수를 반환합니다.")
     public ApiResponse<TodoCalendarMonthResponse> getCalendarMonth(
-            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userId,
             @RequestParam int year,
             @RequestParam int month
     ) {
