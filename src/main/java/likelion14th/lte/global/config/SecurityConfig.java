@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/oauth2/**",             // 카카오 OAuth 리디렉션
                                 "/login/oauth2/**",
+                                "/*", //login미구현상태라 전부 허용해야됨(로컬상에서만 할거라 가능한 일)
 
                                 "/api/auth/kakao",
                                 "/api/auth/reissue",
